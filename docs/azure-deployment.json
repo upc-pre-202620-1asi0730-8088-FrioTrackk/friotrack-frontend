@@ -1,0 +1,36 @@
+{
+  "verifiedAt": "2026-10-09T02:35:30.171Z",
+  "subscriptionName": "Azure for Students",
+  "resourceGroup": "rg-friotrack-tb1",
+  "accountName": "friotracktb1bce6db1b",
+  "location": "westus",
+  "sku": "Standard_LRS",
+  "endpoint": "https://friotracktb1bce6db1b.z22.web.core.windows.net/",
+  "landingUrl": "https://friotracktb1bce6db1b.z22.web.core.windows.net/landing/",
+  "coordinatorUrl": "https://friotracktb1bce6db1b.z22.web.core.windows.net/#/login?role=coordinator&lang=en",
+  "cargoClientUrl": "https://friotracktb1bce6db1b.z22.web.core.windows.net/#/login?role=cargo-client&lang=en",
+  "fileCount": 34,
+  "totalBytes": 2221461,
+  "checks": [
+    {
+      "route": "/",
+      "status": 200,
+      "contentType": "text/html; charset=utf-8"
+    },
+    {
+      "route": "/landing/",
+      "status": 200,
+      "contentType": "text/html; charset=utf-8"
+    },
+    {
+      "route": "/landing/Terms-and-Condition.html",
+      "status": 200,
+      "contentType": "text/html; charset=utf-8"
+    },
+    {
+      "route": "/logo.svg",
+      "status": 200,
+      "contentType": "image/svg+xml"
+    }
+  ]
+}

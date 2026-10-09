@@ -1,0 +1,212 @@
+{
+  "verifiedAt": "2026-10-09T02:36:17.790Z",
+  "checkedFiles": 34,
+  "allMatch": true,
+  "missingPageStatus": 404,
+  "files": [
+    {
+      "path": "404.html",
+      "status": 200,
+      "sha256": "d0b7ff8f166eaea45ed6a5e49e428e843109fba0b9eef7472e334ed4d3196173",
+      "contentType": "text/html; charset=utf-8"
+    },
+    {
+      "path": "index.html",
+      "status": 200,
+      "sha256": "35823daaf76a19fe717d8a7ded2d53dbd3ba5d9dedc13259b9ca21ff146de431",
+      "contentType": "text/html; charset=utf-8"
+    },
+    {
+      "path": "logo.svg",
+      "status": 200,
+      "sha256": "1bdefe4795216b01e8072bb2ad124737f30195b9f866c53ac3cc859919375c18",
+      "contentType": "image/svg+xml"
+    },
+    {
+      "path": "landing/index.html",
+      "status": 200,
+      "sha256": "b75309112070e059dcc35da5304f8760f0e17e3e35fd3305413d163637e9d5f5",
+      "contentType": "text/html; charset=utf-8"
+    },
+    {
+      "path": "landing/Terms-and-Condition.html",
+      "status": 200,
+      "sha256": "f824062fe9c6978d7facacbb0525a40fbf3dcfe41ef0fcd006ff5c3248e67d09",
+      "contentType": "text/html; charset=utf-8"
+    },
+    {
+      "path": "landing/i18n/en.js",
+      "status": 200,
+      "sha256": "ad569a07af937a297e6368bbbeabe19d0e33b4a8bb98a16806de90dc12c144df",
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "path": "landing/i18n/es.js",
+      "status": 200,
+      "sha256": "d62e5b75f8fe196473f0a5cf57b9674d3ea7f3dc587616767e43fdda4d188b10",
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "path": "landing/assets/js/app.js",
+      "status": 200,
+      "sha256": "92e9ab86533496c63279aee9c17c2c94cae622a8e7259530d95ddaa18de5e197",
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "path": "landing/assets/js/hero-sim.js",
+      "status": 200,
+      "sha256": "4356d253166208caffb87f1eec8ca8f2f223cf698c63b5df75344213eb06f528",
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "path": "landing/assets/js/i18n.js",
+      "status": 200,
+      "sha256": "94a32c5ff96131fbbe8424dad3528102353f339b6512e8e8b662654af9bbbec1",
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "path": "landing/assets/js/ui.js",
+      "status": 200,
+      "sha256": "d5ae3ec7cf85d2ea0dc8f84b21f9d5a3c985831c085ef411fe36e01e065dd0fc",
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "path": "landing/assets/images/logo.svg",
+      "status": 200,
+      "sha256": "1b9d36305d65732abb80bae0992068bfb7293d4c0372e86dc765dba2ab323c53",
+      "contentType": "image/svg+xml"
+    },
+    {
+      "path": "landing/assets/images/og-friotrack.png",
+      "status": 200,
+      "sha256": "dc9c88e5e20b9f18d08b2713cc976128959b7f0b415beca7430ab9eb62038e0a",
+      "contentType": "image/png"
+    },
+    {
+      "path": "landing/assets/images/team/README.txt",
+      "status": 200,
+      "sha256": "2b006a50ded342707b98c41c3330db826d95c451ce6a73f47b7425a203c12e9c",
+      "contentType": "application/octet-stream"
+    },
+    {
+      "path": "landing/assets/images/team/u20241f246.png",
+      "status": 200,
+      "sha256": "643db59620fdc1edd50f96b5c6298e3ed3781aea19024b04cbf652e75359d9c7",
+      "contentType": "image/png"
+    },
+    {
+      "path": "landing/assets/css/styles.css",
+      "status": 200,
+      "sha256": "1f4c06350610c06eadc5c7db02fae98798e723402063cc2efbe7d1e484eb3d39",
+      "contentType": "text/css; charset=utf-8"
+    },
+    {
+      "path": "assets/index-CF3heRjH.js",
+      "status": 200,
+      "sha256": "26824ace0869b11de7ff8774d58041572e7bbee4e4cbbc39fffbc493251d5b5f",
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "path": "assets/index-Dbg3fRmy.css",
+      "status": 200,
+      "sha256": "0a65c7c4a345a9c2ca0aef0385e1a27603ed110f47cb36ef37e0c80a788e353c",
+      "contentType": "text/css; charset=utf-8"
+    },
+    {
+      "path": "assets/inter-latin-400-normal-C38fXH4l.woff2",
+      "status": 200,
+      "sha256": "8909904ab6c872eb994093482a88a28eca2cd95912d7b6fecd72103b0dc07edc",
+      "contentType": "font/woff2"
+    },
+    {
+      "path": "assets/inter-latin-400-normal-CyCys3Eg.woff",
+      "status": 200,
+      "sha256": "e20fa0b4fd2dd26e4d14b3ac3cc922509c3a63fa5e910e90c614544aa042dd45",
+      "contentType": "font/woff"
+    },
+    {
+      "path": "assets/inter-latin-500-normal-BL9OpVg8.woff",
+      "status": 200,
+      "sha256": "9b42c108da48b5ed55a3072e815ffee2d271562e6c0dd6998910e8f9c09e0a3d",
+      "contentType": "font/woff"
+    },
+    {
+      "path": "assets/inter-latin-500-normal-Cerq10X2.woff2",
+      "status": 200,
+      "sha256": "f3779f1efccc4bdcdf9c0a02ab95bf6bd092ed09c48c08cedc725889edd1d19f",
+      "contentType": "font/woff2"
+    },
+    {
+      "path": "assets/inter-latin-600-normal-CiBQ2DWP.woff",
+      "status": 200,
+      "sha256": "6a9cb3a509b4eeaf12b7dda6c4aacac3e85d07f4201bf4dd716e332e692b87bd",
+      "contentType": "font/woff"
+    },
+    {
+      "path": "assets/inter-latin-600-normal-LgqL8muc.woff2",
+      "status": 200,
+      "sha256": "f9a06e79cd3a2a20951c0f0e28f66dd0e6d3fda73911d640a2125c8fcb78f21a",
+      "contentType": "font/woff2"
+    },
+    {
+      "path": "assets/inter-latin-700-normal-BLAVimhd.woff",
+      "status": 200,
+      "sha256": "7c5ed5655730de337704d3fc94628515cd7e3d8d32368871709bf56ac0397e7a",
+      "contentType": "font/woff"
+    },
+    {
+      "path": "assets/inter-latin-700-normal-Yt3aPRUw.woff2",
+      "status": 200,
+      "sha256": "6f56409fd3d64bb85f7d070bce20749db2d66b6d63cec586cc22d1c761be2491",
+      "contentType": "font/woff2"
+    },
+    {
+      "path": "assets/leaflet-src-Byf149Wh.js",
+      "status": 200,
+      "sha256": "b5f6edcb2ae713969e26bdc6412df54067e80f52f4e50be26c51ce331ac54534",
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "path": "assets/primeicons-C6QP2o4f.woff2",
+      "status": 200,
+      "sha256": "9eea6e0bcb974ec568fdcb1eec182d3b5383a3a23899a690140b2c0167886882",
+      "contentType": "font/woff2"
+    },
+    {
+      "path": "assets/primeicons-DMOk5skT.eot",
+      "status": 200,
+      "sha256": "987f23eadfa70c603276a71c3c975c8d0534d9c719d8a6e3d965005e7b93747b",
+      "contentType": "application/vnd.ms-fontobject"
+    },
+    {
+      "path": "assets/primeicons-Dr5RGzOO.svg",
+      "status": 200,
+      "sha256": "36c54cecfca947a6913c96df884300ce14108c4d8cb1cb241969321342f890c9",
+      "contentType": "image/svg+xml"
+    },
+    {
+      "path": "assets/primeicons-MpK4pl85.ttf",
+      "status": 200,
+      "sha256": "dc895fee9f3ce1b0eaf16b4b9fab20077fc2981e6c0b332e4c97c176832fc05b",
+      "contentType": "font/ttf"
+    },
+    {
+      "path": "assets/primeicons-WjwUDZjB.woff",
+      "status": 200,
+      "sha256": "f5d1d2195e05b8085953aa7d50b2e77070cd1120e0100a8600771aa5ba11a01e",
+      "contentType": "font/woff"
+    },
+    {
+      "path": "assets/primevue-C68fiQ_8.js",
+      "status": 200,
+      "sha256": "4df89e1a76b787b3ae5660c4fba3d57ca4c3abfcaece7543bc9a24bd2da92b79",
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "path": "assets/vue-X6Utt7Rg.js",
+      "status": 200,
+      "sha256": "8ced2e087300c10b470e51d5848f6f1635f66b7f38f1f6fc673f1a223e6133aa",
+      "contentType": "text/javascript; charset=utf-8"
+    }
+  ]
+}

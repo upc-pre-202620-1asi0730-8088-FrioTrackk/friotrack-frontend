@@ -1,0 +1,10 @@
+{
+  "apiUrl": "https://friotrack-api-bce6db1b.azurewebsites.net/api",
+  "appName": "friotrack-api-bce6db1b",
+  "resourceGroup": "rg-friotrack-tb1",
+  "plan": "plan-friotrack-free",
+  "tier": "Free F1",
+  "location": "westus",
+  "runtime": ".NET 10",
+  "deployedAt": "2026-10-09T02:28:36.605Z"
+}

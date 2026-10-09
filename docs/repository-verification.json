@@ -1,0 +1,10 @@
+{
+  "verifiedAt": "2026-10-09T03:12:59.387Z",
+  "frontendDomainTests": 15,
+  "apiIntegrationChecks": 26,
+  "frontendBuild": "Vite 7.3.7, 222 modules",
+  "apiBuild": ".NET 10 publish successful",
+  "frontendFilesMatchingAzureBuild": 20,
+  "apiPackage": "Created successfully with .NET ZIP utility",
+  "deploymentPasswordsExcluded": true
+}
