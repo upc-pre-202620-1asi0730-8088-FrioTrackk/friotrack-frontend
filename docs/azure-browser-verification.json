@@ -1,0 +1,23 @@
+{
+  "verifiedAt": "2026-10-09T02:39:30.443Z",
+  "endpoint": "https://friotracktb1bce6db1b.z22.web.core.windows.net/",
+  "api": "https://friotrack-api-bce6db1b.azurewebsites.net/api",
+  "frontendBundle": "index-CF3heRjH.js",
+  "checks": [
+    "Wrong password rejected with a Spanish error message",
+    "Coordinator login: 4 shipments and management action",
+    "Session restored after browser reload",
+    "Landing cargo-client CTA preserves Spanish",
+    "Client login: 3 assigned shipments, no fleet menu",
+    "No TB1 or sample-access labels in access views",
+    "Logout button returns to login",
+    "Dashboard navigation after logout redirects to login"
+  ],
+  "screenshots": [
+    "login-es.jpg",
+    "coordinator-authenticated-es.jpg",
+    "client-authenticated-es.jpg",
+    "landing-client-cta-es.jpg",
+    "azure-api-overview.jpg"
+  ]
+}

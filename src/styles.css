@@ -11,3 +11,11 @@
 .table-scroll .sr-only{left:0;top:0}
 @media(max-width:760px){.sidebar{visibility:hidden;pointer-events:none}.sidebar.is-open{visibility:visible;pointer-events:auto}}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+
+.access-benefits { display: grid; gap: 1.5rem; margin-top: 3rem; }
+.access-benefits > div { display: flex; align-items: center; gap: 1rem; color: #dbeafe; }
+.access-benefits i { color: #68ddd0; font-size: 1.4rem; }
+.password-field { position: relative; }
+.password-field .p-inputtext { width: 100%; padding-right: 3.2rem; }
+.password-toggle { position: absolute; right: .4rem; top: 50%; transform: translateY(-50%); width: 2.4rem; height: 2.4rem; border: 0; background: transparent; color: #5f7896; cursor: pointer; }
+.password-toggle:focus-visible { outline: 2px solid #0b5ed7; border-radius: .4rem; }

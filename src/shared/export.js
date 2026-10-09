@@ -1,6 +1,6 @@
 import { toRaw } from 'vue';
 import { sampleReport } from '../domains/operations.js';
-import { data, profile } from '../infrastructure/demo-repository.js';
+import { data, profile } from '../infrastructure/workspace-repository.js';
 
 export function downloadSample(id) {
   const content = '\ufeff' + sampleReport(toRaw(data.value), toRaw(profile.value), id);

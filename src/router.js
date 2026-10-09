@@ -1,5 +1,5 @@
 import { createRouter, createWebHashHistory } from 'vue-router';
-import { profile } from './infrastructure/demo-repository.js';
+import { profile } from './infrastructure/workspace-repository.js';
 import AccessView from './views/AccessView.vue';
 import DashboardView from './views/DashboardView.vue';
 import ShipmentsView from './views/ShipmentsView.vue';
