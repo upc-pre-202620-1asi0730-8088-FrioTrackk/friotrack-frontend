@@ -1,0 +1,6 @@
+{
+  "verifiedAt": "2026-10-09T02:29:17.087Z",
+  "api": "https://friotrack-api-bce6db1b.azurewebsites.net/api",
+  "passed": 12,
+  "scope": "authentication and server authorization"
+}

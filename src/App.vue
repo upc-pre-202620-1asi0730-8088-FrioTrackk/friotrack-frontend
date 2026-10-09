@@ -2,7 +2,7 @@
 import { computed, nextTick, onBeforeUnmount, ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { usePrimeVue } from 'primevue/config';
-import { data, execute, leaveSample, persistenceWarning, profile } from './infrastructure/demo-repository.js';
+import { data, execute, logout, persistenceWarning, profile } from './infrastructure/workspace-repository.js';
 import { canView } from './domains/operations.js';
 import { language, setLanguage, t, formatDate } from './shared/i18n.js';
 import { announce, feedback, errorText } from './shared/feedback.js';
@@ -44,12 +44,16 @@ const notices = computed(() => data.value.notifications.filter((notice) => {
   return shipment && canView(profile.value, shipment) && (!notice.recipientProfileIds || notice.recipientProfileIds.includes(profile.value?.id));
 }));
 const unread = computed(() => notices.value.filter((item) => !item.readBy.includes(profile.value?.id)).length);
-function leave() { leaveSample(); router.push('/login'); }
-function markRead() { try { execute('readNotifications'); announce('saved'); } catch (error) { announce(error.code || error.message, 'error'); } }
+async function leave() {
+  try { await logout(); } catch { /* The local session is cleared even when the service is unavailable. */ }
+  noticesOpen.value = false;
+  router.push('/login');
+}
+async function markRead() { try { await execute('readNotifications'); announce('saved'); } catch (error) { announce(error.code || error.message, 'error'); } }
 function noticeText(type) { return t({ alert: 'noticeAlert', created: 'noticeCreated', 'in-transit': 'noticeTransit', delivered: 'noticeDelivered', cancelled: 'noticeCancelled', correctiveAction: 'noticeAction' }[type]); }
 watch(() => route.fullPath, async () => { menuOpen.value = false; await nextTick(); main.value?.focus({ preventScroll: true }); document.title = `${t(route.meta.title || 'app')} · FríoTrack`; });
 watch(profile, (next) => { if (!next && !route.meta.public) router.push('/login'); });
-const landingUrl = import.meta.env.VITE_LANDING_URL || 'https://upc-pre-202620-1asi0730-8088-friotrack.github.io/friotrack-landing/';
+const landingUrl = import.meta.env.VITE_LANDING_URL || './landing/';
 const brandLogo = `${import.meta.env.BASE_URL}logo.svg`;
 </script>
 <template>
@@ -61,7 +65,7 @@ const brandLogo = `${import.meta.env.BASE_URL}logo.svg`;
         <RouterLink to="/dashboard" class="brand"><img :src="brandLogo" alt="" width="38" height="38"/><span>Frío<span>Track</span></span></RouterLink>
         <div class="workspace-label">{{ t('app') }}</div>
         <nav :aria-label="t('app')"><RouterLink v-for="item in navigation" :key="item.path" :to="item.path" :class="['nav-item', { active: route.path.startsWith(item.path) }]" :aria-current="route.path.startsWith(item.path) ? 'page' : undefined"><i :class="`pi pi-${item.icon}`" aria-hidden="true"></i><span>{{ t(item.label) }}</span><span v-if="item.label === 'alerts'" class="nav-count">{{ data.alerts.filter(a => !a.resolved && notices.some(n => n.shipmentId === a.shipmentId)).length }}</span></RouterLink></nav>
-        <div class="sidebar-bottom"><div class="sample-pip"><span></span>{{ t('sampleMode') }}</div><RouterLink to="/profile" class="nav-item"><i class="pi pi-user" aria-hidden="true"></i>{{ t('profile') }}</RouterLink><RouterLink to="/terms" class="nav-item"><i class="pi pi-shield" aria-hidden="true"></i>{{ t('terms') }}</RouterLink><button class="nav-item" @click="leave"><i class="pi pi-sign-out" aria-hidden="true"></i>{{ t('logout') }}</button></div>
+        <div class="sidebar-bottom"><RouterLink to="/profile" class="nav-item"><i class="pi pi-user" aria-hidden="true"></i>{{ t('profile') }}</RouterLink><RouterLink to="/terms" class="nav-item"><i class="pi pi-shield" aria-hidden="true"></i>{{ t('terms') }}</RouterLink><button class="nav-item" @click="leave"><i class="pi pi-sign-out" aria-hidden="true"></i>{{ t('logout') }}</button></div>
       </aside>
       <div class="workspace">
         <header class="topbar">
@@ -73,14 +77,14 @@ const brandLogo = `${import.meta.env.BASE_URL}logo.svg`;
             <RouterLink to="/profile" class="profile-link"><span class="avatar">{{ profile?.name.split(' ').map(v => v[0]).slice(0, 2).join('') }}</span><span class="profile-caption"><strong>{{ profile?.name }}</strong><small>{{ t(profile?.role) }}</small></span></RouterLink>
           </div>
         </header>
-        <div class="sample-banner"><span class="sample-tag"><i class="pi pi-flask" aria-hidden="true"></i>{{ t('sampleShort') }}</span><span>{{ t('sampleNotice') }}</span></div>
         <main ref="main" id="main-content" tabindex="-1" class="main-content"><PMessage v-if="persistenceWarning" severity="warn">{{ t('persistence') }}</PMessage><PMessage v-if="feedback" :severity="feedback.severity" class="feedback" :closable="true" @close="feedback = null">{{ t(feedback.key) }}</PMessage><RouterView v-if="profile || route.meta.public" :key="route.path" /></main>
-        <footer class="app-footer"><span>FríoTrack · BlackStartup · TB1</span><span>{{ t('sampleDate') }}</span></footer>
+        <footer class="app-footer"><span>FríoTrack · BlackStartup</span><RouterLink to="/terms" class="quiet-link">{{ t('terms') }}</RouterLink></footer>
       </div>
     </template>
     <template v-else>
       <header class="access-header"><RouterLink to="/login" class="brand"><img :src="brandLogo" alt="" width="36" height="36"/><span>Frío<span>Track</span></span></RouterLink><div class="access-controls"><a :href="landingUrl" class="quiet-link">{{ t('landing') }} <i class="pi pi-arrow-up-right" aria-hidden="true"></i></a><div class="language-toggle" role="group" :aria-label="t('language')"><button :aria-pressed="language === 'en'" @click="setLanguage('en')">EN</button><button :aria-pressed="language === 'es'" @click="setLanguage('es')">ES</button></div></div></header>
       <main ref="main" id="main-content" tabindex="-1"><RouterView :key="route.path" /></main>
+      <footer class="app-footer"><span>FríoTrack · BlackStartup</span><RouterLink to="/terms" class="quiet-link">{{ t('terms') }}</RouterLink></footer>
     </template>
   </div>
   <PDialog v-model:visible="noticesOpen" modal :header="t('notifications')" :style="{ width: '32rem', maxWidth: '94vw' }">
@@ -89,4 +93,3 @@ const brandLogo = `${import.meta.env.BASE_URL}logo.svg`;
     <template #footer><PButton :label="t('markRead')" icon="pi pi-check" :disabled="!unread" @click="markRead"/></template>
   </PDialog>
 </template>
-

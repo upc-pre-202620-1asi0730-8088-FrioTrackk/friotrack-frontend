@@ -1,0 +1,10 @@
+{
+  "name": "friotrack-tb1-azure-deployment",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@azure/identity": "4.13.3",
+    "@azure/arm-storage": "20.2.0",
+    "@azure/storage-blob": "12.34.0"
+  }
+}

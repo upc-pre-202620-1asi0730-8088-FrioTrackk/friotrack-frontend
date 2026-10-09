@@ -15,6 +15,7 @@ import '@fontsource/inter/latin-600.css';
 import '@fontsource/inter/latin-700.css';
 import 'primeicons/primeicons.css';
 import App from './App.vue';
+import { restoreSession } from './infrastructure/workspace-repository.js';
 import { router } from './router.js';
 import { language } from './shared/i18n.js';
 import { primeVueLocale } from './shared/primevue-locale.js';
@@ -24,4 +25,4 @@ const theme = definePreset(Aura, { semantic: { primary: { 50: '#eaf2fe', 100: '#
 const app = createApp(App);
 app.use(PrimeVue, { locale: primeVueLocale(language.value), theme: { preset: theme, options: { darkModeSelector: false } } });
 for (const [name, component] of Object.entries({ Button, InputText, Select, Dialog, Textarea, Checkbox, Message })) app.component(`P${name}`, component);
-app.use(router).mount('#app');
+restoreSession().then(() => app.use(router).mount('#app'));

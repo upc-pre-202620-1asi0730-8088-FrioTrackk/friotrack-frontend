@@ -2,7 +2,7 @@
 import { computed, reactive, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { canManage, canView, thermalStatus } from '../domains/operations.js';
-import { data, execute, profile } from '../infrastructure/demo-repository.js';
+import { data, execute, profile } from '../infrastructure/workspace-repository.js';
 import { t, formatDate } from '../shared/i18n.js';
 import { announce, errorText } from '../shared/feedback.js';
 import { downloadSample } from '../shared/export.js';
@@ -25,13 +25,13 @@ const shipmentAlerts = computed(() => data.value.alerts.filter(a => a.shipmentId
 const dialog = ref(''), error = ref(''), note = ref('');
 const sampleReading = reactive({ temperature: 4, humidity: 82, lat: -12.05, lng: -77.05 });
 function show(type) { dialog.value = type; error.value = ''; note.value = ''; if (type === 'reading' && reading.value) Object.assign(sampleReading, reading.value); }
-function confirm() {
+async function confirm() {
   error.value = '';
   try {
-    if (dialog.value === 'delete') { execute('deleteShipment', { id: shipment.value.id, version: shipment.value.version }); announce('deleted'); router.push('/shipments'); }
-    else if (dialog.value === 'reading') { execute('addReading', { id: shipment.value.id, ...sampleReading }); announce('readingAdded'); }
-    else if (dialog.value === 'incident') { execute('recordIncident', { id: shipment.value.id, note: note.value }); announce('incident'); }
-    else { execute('transition', { id: shipment.value.id, version: shipment.value.version, status: dialog.value, note: note.value }); announce('updated'); }
+    if (dialog.value === 'delete') { await execute('deleteShipment', { id: shipment.value.id, version: shipment.value.version }); announce('deleted'); router.push('/shipments'); }
+    else if (dialog.value === 'reading') { await execute('addReading', { id: shipment.value.id, ...sampleReading }); announce('readingAdded'); }
+    else if (dialog.value === 'incident') { await execute('recordIncident', { id: shipment.value.id, note: note.value }); announce('incident'); }
+    else { await execute('transition', { id: shipment.value.id, version: shipment.value.version, status: dialog.value, note: note.value }); announce('updated'); }
     dialog.value = '';
   } catch (failure) { error.value = errorText(failure); }
 }

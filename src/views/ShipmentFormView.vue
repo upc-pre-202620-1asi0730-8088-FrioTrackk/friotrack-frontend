@@ -1,7 +1,7 @@
 <script setup>
 import { computed, nextTick, reactive, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import { data, execute } from '../infrastructure/demo-repository.js';
+import { data, execute } from '../infrastructure/workspace-repository.js';
 import { DomainError } from '../domains/operations.js';
 import { t, formatDate } from '../shared/i18n.js';
 import { announce, errorText } from '../shared/feedback.js';
@@ -37,7 +37,7 @@ async function submit() {
   try {
     if (step.value < 3) { validateStep(); step.value++; return; }
     const payload = { ...draft, departure: `${draft.departure}:00-05:00`, arrival: `${draft.arrival}:00-05:00` };
-    const shipment = execute(editing ? 'updateShipment' : 'createShipment', payload);
+    const shipment = await execute(editing ? 'updateShipment' : 'createShipment', payload);
     announce(editing ? 'shipmentUpdated' : 'shipmentCreated'); router.push(`/shipments/${shipment.id}`);
   } catch (failure) { error.value = errorText(failure); await nextTick(); errorBox.value?.$el?.focus(); }
 }
@@ -49,7 +49,7 @@ const overview = computed(() => [
 ]);
 </script>
 <template>
-  <div class="page-heading"><div><RouterLink to="/shipments" class="back-link"><i class="pi pi-arrow-left" aria-hidden="true"></i>{{ t('shipments') }}</RouterLink><h1>{{ t(editing ? 'edit' : 'newShipment') }}</h1><p>{{ t('sampleNotice') }}</p></div><span class="step-count">{{ t('step') }} {{ step + 1 }} {{ t('of') }} 4</span></div>
+  <div class="page-heading"><div><RouterLink to="/shipments" class="back-link"><i class="pi pi-arrow-left" aria-hidden="true"></i>{{ t('shipments') }}</RouterLink><h1>{{ t(editing ? 'edit' : 'newShipment') }}</h1><p>{{ t('dashboardSubtitle') }}</p></div><span class="step-count">{{ t('step') }} {{ step + 1 }} {{ t('of') }} 4</span></div>
   <PMessage v-if="unavailable" severity="error">{{ t('editScheduledOnly') }}</PMessage>
   <div v-else class="form-layout"><section class="panel wizard-panel"><ol class="wizard-steps"><li v-for="(label, index) in steps" :key="label" :class="{ current: step === index, completed: step > index }" :aria-current="step === index ? 'step' : undefined"><button type="button" :disabled="index > step" @click="step = index; error = ''"><span>{{ step > index ? '✓' : index + 1 }}</span><strong>{{ t(label) }}</strong></button></li></ol>
     <form class="wizard-form" @submit.prevent="submit"><h2>{{ t(steps[step]) }}</h2><p class="form-caption">* {{ t('required') }}</p>
@@ -58,5 +58,5 @@ const overview = computed(() => [
       <div v-if="step === 2" class="form-grid"><div class="field"><label for="min-temp">{{ t('minTemp') }} *</label><PInputText id="min-temp" v-model="draft.minTemp" type="number" step="0.1" min="-50" max="50" required/></div><div class="field"><label for="max-temp">{{ t('maxTemp') }} *</label><PInputText id="max-temp" v-model="draft.maxTemp" type="number" step="0.1" min="-50" max="50" required/></div><div class="field"><label for="min-humidity">{{ t('minHumidity') }} *</label><PInputText id="min-humidity" v-model="draft.minHumidity" type="number" step="0.1" min="0" max="100" required/></div><div class="field"><label for="max-humidity">{{ t('maxHumidity') }} *</label><PInputText id="max-humidity" v-model="draft.maxHumidity" type="number" step="0.1" min="0" max="100" required/></div><PMessage severity="info" class="span-2">{{ t('rangeHelp') }}</PMessage></div>
       <div v-if="step === 3"><dl class="review-grid"><div v-for="[label, value] in overview" :key="label"><dt>{{ t(label) }}</dt><dd>{{ value }}</dd></div></dl><PMessage severity="info">{{ t('resourceHelp') }}</PMessage></div>
       <PMessage v-if="error" ref="errorBox" tabindex="-1" severity="error" class="form-error">{{ error }}</PMessage><div class="wizard-actions"><PButton v-if="step > 0" :label="t('back')" outlined icon="pi pi-arrow-left" @click="step--; error = ''"/><RouterLink v-else to="/shipments" class="quiet-link">{{ t('cancel') }}</RouterLink><PButton type="submit" :label="t(step === 3 ? (editing ? 'save' : 'create') : 'next')" :icon="step === 3 ? 'pi pi-check' : 'pi pi-arrow-right'" iconPos="right"/></div>
-    </form></section><aside class="wizard-aside"><span class="aside-icon"><i class="pi pi-shield" aria-hidden="true"></i></span><h2>{{ t('limits') }}</h2><p>{{ t('rangeHelp') }}</p><div class="aside-tip"><i class="pi pi-info-circle" aria-hidden="true"></i><p>{{ t('resourceHelp') }}</p></div><span class="sample-tag">{{ t('sampleShort') }}</span></aside></div>
+    </form></section><aside class="wizard-aside"><span class="aside-icon"><i class="pi pi-shield" aria-hidden="true"></i></span><h2>{{ t('limits') }}</h2><p>{{ t('rangeHelp') }}</p><div class="aside-tip"><i class="pi pi-info-circle" aria-hidden="true"></i><p>{{ t('resourceHelp') }}</p></div></aside></div>
 </template>
