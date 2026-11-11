@@ -1,7 +1,11 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { createSeed } from '../src/domains/seed.js';
-import { applyCommand, canView, registerLocalProfile, sampleReport, thermalStatus, validateShipment, visibleShipments } from '../src/domains/operations.js';
+import { createSeed } from './fixtures/seed.js';
+import { applyCommand, registerLocalProfile } from './support/workspace-simulator.js';
+import { canView } from '../src/iam/domain/access-policy.js';
+import { sampleReport } from '../src/alerts-reporting/domain/sample-report.js';
+import { thermalStatus } from '../src/monitoring/domain/thermal-status.js';
+import { validateShipment, visibleShipments } from '../src/shipment-management/domain/shipment-policy.js';
 
 const seed = () => createSeed();
 const manager = (state) => state.profiles.find(item => item.role === 'coordinator');

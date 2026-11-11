@@ -2,11 +2,11 @@
 import { computed, nextTick, onBeforeUnmount, ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { usePrimeVue } from 'primevue/config';
-import { data, execute, logout, persistenceWarning, profile } from './infrastructure/workspace-repository.js';
-import { canView } from './domains/operations.js';
-import { language, setLanguage, t, formatDate } from './shared/i18n.js';
-import { announce, feedback, errorText } from './shared/feedback.js';
-import { primeVueLocale } from './shared/primevue-locale.js';
+import { data, execute, logout, persistenceWarning, profile } from './shared/application/workspace.js';
+import { canView } from './iam/domain/access-policy.js';
+import { language, setLanguage, t, formatDate } from './shared/presentation/i18n.js';
+import { announce, feedback, errorText } from './shared/presentation/feedback.js';
+import { primeVueLocale } from './shared/presentation/primevue-locale.js';
 const route = useRoute(), router = useRouter();
 const primevue = usePrimeVue();
 watch(language, (locale) => { primevue.config.locale = primeVueLocale(locale); });

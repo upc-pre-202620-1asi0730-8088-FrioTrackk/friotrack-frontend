@@ -7,7 +7,7 @@ ASP.NET Core 10 REST API for account access and shared shipment operations. The 
 Requires .NET SDK 10. Set `FRIOTRACK_COORDINATOR_PASSWORD` and `FRIOTRACK_CLIENT_PASSWORD` to initial passwords of at least 12 characters, then run from the workspace root:
 
 ```powershell
-rtk proxy dotnet run --project api/FrioTrack.Api.csproj --urls http://localhost:5080
+dotnet run --project api/FrioTrack.Api.csproj --urls http://localhost:5080
 ```
 
 The initial accounts are `coordinador@friotrack.app` and `cliente@friotrack.app`. Passwords are supplied through environment variables, not committed to source. They initialize the account store only on its first run.
@@ -32,11 +32,17 @@ This deployment uses a small persistent file store suitable for the course demon
 ## Verification
 
 ```powershell
-rtk proxy dotnet publish api/FrioTrack.Api.csproj -c Release -o output/api-publish --no-self-contained
-rtk proxy node scripts/test-api.mjs
-rtk proxy node scripts/test-api.mjs --azure
+dotnet publish api/FrioTrack.Api.csproj -c Release -o output/api-publish --no-self-contained
+node scripts/test-api.mjs
+node scripts/test-api.mjs --azure
 ```
 
 The local suite uses an isolated store and checks development CORS, credentials, role escalation, registration, persistence, shipment validation, alerts, logout and rate limiting. The default CORS origins include both `localhost:5173` and `127.0.0.1:5173`. The Azure suite reads the local generated accounts file, verifies authentication and authorization, and does not add shipments or register persistent test accounts.
 
 Keep the original ignored `.azure-tools/accounts.json` when redeploying an existing Azure instance. Newly generated deployment values do not reset passwords in an existing persisted account store.
+
+## Source organization
+
+Web Services has an independent public repository: [friotrack-api](https://github.com/upc-pre-202620-1asi0730-8088-FrioTrackk/friotrack-api). This directory is a transition copy retained for compatibility with the frontend's existing scripts.
+
+`Program.cs` composes dependencies, CORS and rate limiting. `Interfaces/` maps the HTTP contract and handles responses. `Shared/Application/WorkspaceService.cs` coordinates sessions, visibility and serialized commands; it depends on `IWorkspacePersistence` and `IPasswordHasher`. Infrastructure implements file persistence and PBKDF2. `WorkspaceCommands.cs` contains the current JSON command validation and processing. These application handlers are not a complete implementation of the target DDD aggregates. See [the code structure](../docs/code-structure.md) for the implementation boundaries.
