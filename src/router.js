@@ -1,14 +1,14 @@
 import { createRouter, createWebHashHistory } from 'vue-router';
-import { profile } from './infrastructure/workspace-repository.js';
-import AccessView from './views/AccessView.vue';
-import DashboardView from './views/DashboardView.vue';
-import ShipmentsView from './views/ShipmentsView.vue';
-import ShipmentFormView from './views/ShipmentFormView.vue';
-import ShipmentDetailView from './views/ShipmentDetailView.vue';
-import AlertsView from './views/AlertsView.vue';
-import FleetView from './views/FleetView.vue';
-import ProfileView from './views/ProfileView.vue';
-import TermsView from './views/TermsView.vue';
+import { profile } from './shared/application/workspace.js';
+import AccessView from './iam/presentation/pages/AccessView.vue';
+import DashboardView from './shipment-management/presentation/pages/DashboardView.vue';
+import ShipmentsView from './shipment-management/presentation/pages/ShipmentsView.vue';
+import ShipmentFormView from './shipment-management/presentation/pages/ShipmentFormView.vue';
+import ShipmentDetailView from './shipment-management/presentation/pages/ShipmentDetailView.vue';
+import AlertsView from './alerts-reporting/presentation/pages/AlertsView.vue';
+import FleetView from './fleet/presentation/pages/FleetView.vue';
+import ProfileView from './iam/presentation/pages/ProfileView.vue';
+import TermsView from './shared/presentation/pages/TermsView.vue';
 
 export const router = createRouter({
   history: createWebHashHistory(),
