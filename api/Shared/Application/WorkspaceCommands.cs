@@ -2,7 +2,9 @@ using System.Globalization;
 using System.Text.Json.Nodes;
 using System.Text.RegularExpressions;
 
-static class Operations {
+namespace FrioTrack.Api.Shared.Application;
+
+internal static class WorkspaceCommands {
     static string S(JsonNode? n, string key) => n?[key]?.ToString() ?? "";
     static double N(JsonNode? n, string key) => double.TryParse(S(n, key), NumberStyles.Float, CultureInfo.InvariantCulture, out var value) && double.IsFinite(value) ? value : throw new ApiError("requiredFields");
     static IEnumerable<JsonObject> Items(JsonObject state, string key) => state[key]!.AsArray().OfType<JsonObject>();
