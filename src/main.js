@@ -26,6 +26,7 @@ const theme = definePreset(Aura, { semantic: { primary: { 50: '#eaf2fe', 100: '#
 const app = createApp(App);
 configureWorkspaceGateway(new RestWorkspaceGateway({
   apiUrl: import.meta.env.VITE_API_URL || 'http://localhost:5080/api',
+  getLanguage: () => language.value === 'es' ? 'es-419' : 'en-US',
   onSessionExpired: clearWorkspace,
   onPersistenceWarning: warnAboutPersistence,
 }));

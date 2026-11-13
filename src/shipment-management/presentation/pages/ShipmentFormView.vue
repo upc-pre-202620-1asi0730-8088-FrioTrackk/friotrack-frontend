@@ -14,9 +14,9 @@ const draft = reactive(existing ? { ...existing, departure: localInput(existing.
   cargo: '', weight: '', origin: '', destination: '', customerId: '', vehicleId: '', driverId: '',
   departure: localInput(new Date(Date.now() + 86400000).toISOString()), arrival: localInput(new Date(Date.now() + 2 * 86400000).toISOString()), minTemp: 2, maxTemp: 6, minHumidity: 70, maxHumidity: 95,
 });
-const step = ref(0), error = ref(''), errorBox = ref();
+const step = ref(0), error = ref(''), errorBox = ref(), busy = ref(false);
 const steps = ['details', 'assignment', 'limits', 'review'];
-const vehicles = computed(() => data.value.vehicles.filter(item => item.enabled).map(item => ({ ...item, label: `${item.plate} · ${item.capacity} t · ${item.sensor}` })));
+const vehicles = computed(() => data.value.vehicles.filter(item => item.enabled).map(item => ({ ...item, label: `${item.plate} · ${item.capacity} t${item.sensor ? ` · ${item.sensor}` : ''}` })));
 const drivers = computed(() => data.value.drivers.filter(item => item.enabled));
 const customers = computed(() => data.value.profiles.filter(item => item.role === 'cargo-client').map(item => ({ ...item, label: `${item.name} · ${item.organization}` })));
 function validateStep() {
@@ -33,13 +33,16 @@ function validateStep() {
   }
 }
 async function submit() {
+  if (busy.value) return;
   error.value = '';
   try {
     if (step.value < 3) { validateStep(); step.value++; return; }
+    busy.value = true;
     const payload = { ...draft, departure: `${draft.departure}:00-05:00`, arrival: `${draft.arrival}:00-05:00` };
     const shipment = await execute(editing ? 'updateShipment' : 'createShipment', payload);
     announce(editing ? 'shipmentUpdated' : 'shipmentCreated'); router.push(`/shipments/${shipment.id}`);
   } catch (failure) { error.value = errorText(failure); await nextTick(); errorBox.value?.$el?.focus(); }
+  finally { busy.value = false; }
 }
 const overview = computed(() => [
   ['cargo', draft.cargo], ['route', `${draft.origin} → ${draft.destination}`], ['weight', `${draft.weight} t`],
@@ -57,6 +60,6 @@ const overview = computed(() => [
       <div v-if="step === 1" class="form-grid"><div class="field span-2"><label for="vehicle">{{ t('vehicle') }} *</label><PSelect inputId="vehicle" v-model="draft.vehicleId" :options="vehicles" optionValue="id" optionLabel="label" :placeholder="t('selectVehicle')"/></div><div class="field span-2"><label for="driver">{{ t('driver') }} *</label><PSelect inputId="driver" v-model="draft.driverId" :options="drivers" optionValue="id" optionLabel="name" :placeholder="t('selectDriver')"/></div><div class="field span-2"><label for="customer">{{ t('customer') }} *</label><PSelect inputId="customer" v-model="draft.customerId" :options="customers" optionValue="id" optionLabel="label" :placeholder="t('selectClient')"/></div><PMessage severity="info" class="span-2">{{ t('resourceHelp') }}</PMessage></div>
       <div v-if="step === 2" class="form-grid"><div class="field"><label for="min-temp">{{ t('minTemp') }} *</label><PInputText id="min-temp" v-model="draft.minTemp" type="number" step="0.1" min="-50" max="50" required/></div><div class="field"><label for="max-temp">{{ t('maxTemp') }} *</label><PInputText id="max-temp" v-model="draft.maxTemp" type="number" step="0.1" min="-50" max="50" required/></div><div class="field"><label for="min-humidity">{{ t('minHumidity') }} *</label><PInputText id="min-humidity" v-model="draft.minHumidity" type="number" step="0.1" min="0" max="100" required/></div><div class="field"><label for="max-humidity">{{ t('maxHumidity') }} *</label><PInputText id="max-humidity" v-model="draft.maxHumidity" type="number" step="0.1" min="0" max="100" required/></div><PMessage severity="info" class="span-2">{{ t('rangeHelp') }}</PMessage></div>
       <div v-if="step === 3"><dl class="review-grid"><div v-for="[label, value] in overview" :key="label"><dt>{{ t(label) }}</dt><dd>{{ value }}</dd></div></dl><PMessage severity="info">{{ t('resourceHelp') }}</PMessage></div>
-      <PMessage v-if="error" ref="errorBox" tabindex="-1" severity="error" class="form-error">{{ error }}</PMessage><div class="wizard-actions"><PButton v-if="step > 0" :label="t('back')" outlined icon="pi pi-arrow-left" @click="step--; error = ''"/><RouterLink v-else to="/shipments" class="quiet-link">{{ t('cancel') }}</RouterLink><PButton type="submit" :label="t(step === 3 ? (editing ? 'save' : 'create') : 'next')" :icon="step === 3 ? 'pi pi-check' : 'pi pi-arrow-right'" iconPos="right"/></div>
+      <PMessage v-if="error" ref="errorBox" tabindex="-1" severity="error" class="form-error">{{ error }}</PMessage><div class="wizard-actions"><PButton v-if="step > 0" :label="t('back')" outlined icon="pi pi-arrow-left" @click="step--; error = ''"/><RouterLink v-else to="/shipments" class="quiet-link">{{ t('cancel') }}</RouterLink><PButton type="submit" :label="t(step === 3 ? (editing ? 'save' : 'create') : 'next')" :icon="step === 3 ? 'pi pi-check' : 'pi pi-arrow-right'" iconPos="right" :loading="busy" :disabled="busy"/></div>
     </form></section><aside class="wizard-aside"><span class="aside-icon"><i class="pi pi-shield" aria-hidden="true"></i></span><h2>{{ t('limits') }}</h2><p>{{ t('rangeHelp') }}</p><div class="aside-tip"><i class="pi pi-info-circle" aria-hidden="true"></i><p>{{ t('resourceHelp') }}</p></div></aside></div>
 </template>

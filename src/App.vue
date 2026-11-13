@@ -2,7 +2,7 @@
 import { computed, nextTick, onBeforeUnmount, ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { usePrimeVue } from 'primevue/config';
-import { data, execute, logout, persistenceWarning, profile } from './shared/application/workspace.js';
+import { data, execute, logout, persistenceWarning, pendingRequests, profile } from './shared/application/workspace.js';
 import { canView } from './iam/domain/access-policy.js';
 import { language, setLanguage, t, formatDate } from './shared/presentation/i18n.js';
 import { announce, feedback, errorText } from './shared/presentation/feedback.js';
@@ -45,9 +45,10 @@ const notices = computed(() => data.value.notifications.filter((notice) => {
 }));
 const unread = computed(() => notices.value.filter((item) => !item.readBy.includes(profile.value?.id)).length);
 async function leave() {
-  try { await logout(); } catch { /* The local session is cleared even when the service is unavailable. */ }
   noticesOpen.value = false;
+  const revocation = logout();
   router.push('/login');
+  try { await revocation; } catch { /* The local session is cleared even when the service is unavailable. */ }
 }
 async function markRead() { try { await execute('readNotifications'); announce('saved'); } catch (error) { announce(error.code || error.message, 'error'); } }
 function noticeText(type) { return t({ alert: 'noticeAlert', created: 'noticeCreated', 'in-transit': 'noticeTransit', delivered: 'noticeDelivered', cancelled: 'noticeCancelled', correctiveAction: 'noticeAction' }[type]); }
@@ -59,6 +60,7 @@ const brandLogo = `${import.meta.env.BASE_URL}logo.svg`;
 <template>
   <a class="skip-link" href="#main-content">{{ language === 'es' ? 'Saltar al contenido' : 'Skip to content' }}</a>
   <div :class="['app-shell', { bare }]">
+    <div v-if="pendingRequests" class="request-status" role="status" aria-live="polite"><i class="pi pi-spinner pi-spin" aria-hidden="true"></i>{{ t('working') }}</div>
     <template v-if="!bare">
       <button v-if="menuOpen && mobile" class="nav-backdrop" tabindex="-1" :aria-label="t('close')" @click="closeMenu"></button>
       <aside id="workspace-navigation" ref="sidebarElement" :class="['sidebar', { 'is-open': menuOpen }]" :inert="mobile && !menuOpen ? true : undefined" :aria-hidden="mobile && !menuOpen ? 'true' : undefined" :role="mobile && menuOpen ? 'dialog' : undefined" :aria-modal="mobile && menuOpen ? 'true' : undefined" :aria-label="mobile ? t('menu') : undefined" @keydown="navigationKey">
