@@ -1,4 +1,6 @@
-# Azure deployment and execution evidence
+# Historical TB1 Azure deployment and execution evidence
+
+This page and its linked receipts describe the original TB1 JSON-backed publication. They do not certify the current AV2 REST/PostgreSQL source or its deployment. Use [redeployment instructions](redeployment.md) for current updates, after preparing the hosted database. The API source is maintained independently in `friotrack-api`.
 
 The frontend now uses email/password authentication through its supporting ASP.NET Core API. Academic labels and the sample-profile selector have been removed from the application interface. Operational seed records remain fictional; simulated readings are identified beside the monitoring view and in reports.
 
@@ -19,23 +21,11 @@ The account role is assigned by the API. Cargo clients receive only their own sh
 
 Initial account emails are recorded in the README. Generated passwords, Azure access tokens, Storage keys and `.azure-tools/accounts.json` are excluded from source control. The initial passwords are configured for the server at deployment and initialize the persisted accounts only on their first run. `.env.production` contains public endpoint URLs only.
 
-## Reproduce from this repository
+## Historical publication
 
-```powershell
-rtk proxy npm.cmd ci
-rtk proxy npm.cmd test
-rtk proxy npm.cmd run build
-rtk proxy npm.cmd ci --prefix scripts
-rtk proxy dotnet publish api/FrioTrack.Api.csproj -c Release -o output/api-publish --no-self-contained
-rtk proxy node scripts/test-api.mjs
-rtk proxy dotnet run --project scripts/PackageApi/PackageApi.csproj
-rtk proxy node scripts/deploy-api.mjs
-rtk proxy node scripts/test-api.mjs --azure
-rtk proxy node scripts/deploy-storage-tb1.mjs
-rtk proxy node scripts/verify-azure.mjs
-```
+The original publication used Microsoft Entra device authentication, Kudu ZIP deployment for the API and Storage uploads for the static products. Its API copy and provisioning command are no longer maintained in this frontend repository. Reproducing that historical version requires the corresponding TB1 source revision; do not execute its provisioning procedure against the current service.
 
-Run from the repository root. The deployment scripts use Microsoft Entra device authentication. API ZIP upload uses Kudu token authentication. Storage uploads only files under `dist/`, sets their content types and requires revalidation of HTML. Hash router URLs do not require server route rewrites. Publishing frontend files does not remove the separate landing already on the Storage site. A first deployment of the landing must use its own source repository.
+Current updates use independently built source artifacts and the existing-resource tool described in [redeployment instructions](redeployment.md). Hash router URLs do not require server route rewrites. The landing remains a separate source and publication beneath `/landing/`.
 
 The API plan is Free F1, has execution quotas and may require a cold start after inactivity. Azure Storage is charged according to usage. No paid database or paid App Service tier was created for this version. [Microsoft App Service documentation](https://learn.microsoft.com/en-us/azure/app-service/quickstart-dotnetcore), [Storage static websites](https://learn.microsoft.com/en-us/azure/storage/blobs/storage-blob-static-website).
 
@@ -62,4 +52,4 @@ The stored file verification describes the original combined Azure publication, 
 
 ![Client CTA on the published landing](evidence/landing-client-cta-es.jpg)
 
-The screenshots show the actual integrated browser viewport; they do not certify all screen sizes or full accessibility compliance. The API uses a single-instance file store appropriate for this project; physical sensors, transactional database, organization tenancy, password recovery, verified emails and external notifications remain future work.
+The screenshots show the TB1 integrated browser viewport; they do not certify all screen sizes or full accessibility compliance. That version used a single-instance file store. The AV2 source adds relational persistence and organization-scoped operations; those changes require their own tests and deployment evidence. Physical sensors, password recovery, verified emails and external notifications remain outside these historical checks.

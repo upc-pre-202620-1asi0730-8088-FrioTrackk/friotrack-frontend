@@ -4,6 +4,7 @@ import { readFile, readdir, lstat, realpath, writeFile, mkdir } from 'node:fs/pr
 import { fileURLToPath } from 'node:url';
 import { inflateRawSync } from 'node:zlib';
 import path from 'node:path';
+import { requirePreparedPostgres, requireCompatibleBackend, requireCompatibleDeploymentOrder } from './deployment-policy.mjs';
 
 const usage = `Redeploy an existing FríoTrack resource without changing its settings.
 node scripts/redeploy-existing.mjs --component frontend|landing|api --artifact <dist-directory|api.zip> --source-repo <repository-directory> --source-sha <full-Git-SHA> [--check]
@@ -73,20 +74,27 @@ function zipEntries(bytes) {
   }
   return entries;
 }
-let packageBytes, packageSha;
+let packageBytes, packageSha, apiVersion;
 if (component === 'api') {
   if (!(await lstat(artifact)).isFile()) throw new Error('The API artifact must be a ZIP file.');
   packageBytes = await readFile(artifact); packageSha = hash(packageBytes);
   const entries = zipEntries(packageBytes);
-  for (const required of ['FrioTrack.Api.dll', 'FrioTrack.Api.runtimeconfig.json', 'seed.json']) if (!entries.has(required)) throw new Error('API package lacks ' + required);
-  const config = entries.get('FrioTrack.Api.runtimeconfig.json');
-  if (config.size > 1024 * 1024) throw new Error('Unexpected runtime configuration size.');
-  const local = config.offset;
-  if (packageBytes.readUInt32LE(local) !== 0x04034b50) throw new Error('Invalid runtime configuration entry.');
-  const start = local + 30 + packageBytes.readUInt16LE(local + 26) + packageBytes.readUInt16LE(local + 28);
-  const content = packageBytes.subarray(start, start + config.size);
-  const decoded = config.method === 0 ? content : config.method === 8 ? inflateRawSync(content, { maxOutputLength: 1024 * 1024 }) : null;
-  if (!decoded || JSON.parse(decoded.toString('utf8')).runtimeOptions?.tfm !== 'net10.0') throw new Error('Publish the .NET 10 API before packaging it.');
+  for (const required of ['FrioTrack.Api.dll', 'FrioTrack.Api.runtimeconfig.json', 'FrioTrack.Api.deps.json', 'seed.json']) if (!entries.has(required)) throw new Error('API package lacks ' + required);
+  function readPackageJson(name) {
+    const entry = entries.get(name);
+    if (entry.size > 2 * 1024 * 1024) throw new Error('Unexpected API metadata size.');
+    const local = entry.offset;
+    if (packageBytes.readUInt32LE(local) !== 0x04034b50) throw new Error('Invalid API metadata entry.');
+    const start = local + 30 + packageBytes.readUInt16LE(local + 26) + packageBytes.readUInt16LE(local + 28);
+    const content = packageBytes.subarray(start, start + entry.size);
+    const decoded = entry.method === 0 ? content : entry.method === 8 ? inflateRawSync(content, { maxOutputLength: 2 * 1024 * 1024 }) : null;
+    if (!decoded) throw new Error('Unsupported API metadata compression.');
+    return JSON.parse(decoded.toString('utf8'));
+  }
+  if (readPackageJson('FrioTrack.Api.runtimeconfig.json').runtimeOptions?.tfm !== 'net10.0') throw new Error('Publish the .NET 10 API before packaging it.');
+  apiVersion = /<Version>([^<]+)<\/Version>/.exec(await readFile(path.join(sourceRepo, 'FrioTrack.Api.csproj'), 'utf8'))?.[1];
+  if (!/^\d+\.\d+\.\d+(?:-[\w.-]+)?$/.test(apiVersion || '') || (Number(apiVersion.split('.')[0]) === 0 && Number(apiVersion.split('.')[1]) < 2)) throw new Error('This tool requires the canonical PostgreSQL API version 0.2.0 or later.');
+  if (!readPackageJson('FrioTrack.Api.deps.json').libraries?.['FrioTrack.Api/' + apiVersion]) throw new Error('The API package version does not match the source project.');
 } else {
   if (!(await lstat(artifact)).isDirectory()) throw new Error('Static artifacts must be directories.');
   await collect(artifact);
@@ -100,11 +108,12 @@ const receipt = {
   artifact: component === 'api' ? { sha256: packageSha, bytes: packageBytes.length } : { files: files.map(({ path, bytes, sha256 }) => ({ path, bytes, sha256 })), manifestSha256: hash(Buffer.from(JSON.stringify(files.map(({ path, sha256 }) => ({ path, sha256 }))))) },
   scope: 'Redeployment to existing resources; no resource creation, app-setting changes or persisted-data replacement.'
 };
-return { component, sourceSha, artifact, sourceRepo, files, packageBytes, receipt, mime, hash };
+return { component, sourceSha, artifact, sourceRepo, files, packageBytes, apiVersion, receipt, mime, hash };
 }
 const prepared = [];
 // Validate every local source and artifact before beginning authentication.
 for (const task of tasks) prepared.push(await prepareTask(task));
+requireCompatibleDeploymentOrder(prepared.map(task => task.component));
 if (flags.get('--check')) {
   console.log(JSON.stringify(prepared.map(({ component, sourceSha, files, packageBytes, receipt }) => ({ component, sourceSha, checked: true, authenticationStarted: false, ...(component === 'api' ? { packageSha256: receipt.artifact.sha256, bytes: packageBytes.length } : { files: files.length, manifestSha256: receipt.artifact.manifestSha256 }) })), null, 2));
   process.exit(0);
@@ -116,6 +125,7 @@ const resourceGroup = 'rg-friotrack-tb1';
 const appName = 'friotrack-api-bce6db1b';
 const accountName = 'friotracktb1bce6db1b';
 const version = '2024-11-01';
+const apiUrl = 'https://' + appName + '.azurewebsites.net/api';
 const { DeviceCodeCredential } = await import('@azure/identity');
 const credential = new DeviceCodeCredential({ tenantId, userPromptCallback: info => console.log(info.message) });
 const scope = 'https://management.azure.com/.default';
@@ -129,7 +139,14 @@ async function arm(resource, method = 'GET') {
   return response.json();
 }
 const pause = ms => new Promise(resolve => setTimeout(resolve, ms));
-async function preflightCloud(component) {
+async function requirePublishedBackend() {
+  const response = await fetch(apiUrl + '/health', { cache: 'no-store', signal: AbortSignal.timeout(15000), redirect: 'error' });
+  if (!response.ok) throw new Error('The existing REST API is unavailable; publish and verify it before the AV2 frontend.');
+  const health = await response.json().catch(() => null);
+  requireCompatibleBackend(health);
+  return { apiUrl, version: health.version, persistence: health.persistence };
+}
+async function preflightCloud({ component }) {
   if (component !== 'api') {
     const storagePath = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroup}/providers/Microsoft.Storage/storageAccounts/${accountName}`;
     const account = await arm(storagePath + '?api-version=2023-05-01');
@@ -143,20 +160,23 @@ async function preflightCloud(component) {
   const site = await arm(root + '/sites/' + appName + '?api-version=' + version);
   const config = await arm(root + '/sites/' + appName + '/config/web?api-version=' + version);
   if (config.properties?.netFrameworkVersion !== 'v10.0') throw new Error('The existing App Service must already be configured for .NET 10.');
+  const settings = await arm(root + '/sites/' + appName + '/config/appsettings/list?api-version=' + version, 'POST');
+  requirePreparedPostgres(settings.properties || {});
   const planId = site.properties?.serverFarmId;
   if (!planId || !planId.startsWith(`/subscriptions/${subscriptionId}/`)) throw new Error('Unexpected App Service plan.');
   const plan = await arm(planId + '?api-version=' + version);
-  if (Number(plan.sku?.capacity ?? 1) > 1) throw new Error('The JSON API must run as one instance.');
   const scmHost = site.properties?.enabledHostNames?.find(host => host === appName + '.scm.azurewebsites.net');
   if (!scmHost) throw new Error('The expected existing Kudu endpoint is unavailable.');
   return { site, plan, scmHost };
 }
 try {
+  if (prepared.some(task => task.component === 'frontend') && !prepared.some(task => task.component === 'api')) await requirePublishedBackend();
   // GET every destination before the first upload; missing access/resources abort the batch.
-  for (const task of prepared) task.cloud = await preflightCloud(task.component);
+  for (const task of prepared) task.cloud = await preflightCloud(task);
   for (const task of prepared) {
-  const { component, sourceSha, files, packageBytes, receipt, mime, hash, cloud } = task;
+  const { component, sourceSha, files, packageBytes, apiVersion, receipt, mime, hash, cloud } = task;
   if (component !== 'api') {
+    if (component === 'frontend') receipt.backendCompatibility = await requirePublishedBackend();
     const { account, storageKey } = cloud;
     const endpoint = account.properties.primaryEndpoints.web;
     if (new URL(endpoint).hostname !== accountName + '.z22.web.core.windows.net') throw new Error('Unexpected static website destination.');
@@ -202,7 +222,6 @@ try {
       if (deployment.status === 3) throw new Error('Kudu reported a failed deployment.');
       if (i === 89) throw new Error('Deployment did not finish within 450 seconds.');
     }
-    const apiUrl = 'https://' + appName + '.azurewebsites.net/api';
     let health;
     for (let i = 0; i < 30; i++) {
       const response = await fetch(apiUrl + '/health', { signal: AbortSignal.timeout(15000), redirect: 'error' }).catch(() => null);
@@ -210,13 +229,13 @@ try {
       if (i === 29) throw new Error('The deployed API did not become healthy.');
       await pause(5000);
     }
-    if (health?.status !== 'ok' || health?.service !== 'FrioTrack') throw new Error('Unexpected API health response.');
+    if (health?.status !== 'ok' || health?.service !== 'FrioTrack' || health?.persistence !== 'postgresql' || health?.version !== apiVersion) throw new Error('The deployed API must report the packaged PostgreSQL service version.');
     const anonymous = await fetch(apiUrl + '/workspace', { signal: AbortSignal.timeout(15000), redirect: 'error' });
     if (anonymous.status !== 401) throw new Error('The API must reject anonymous workspace access.');
     const denied = await fetch(apiUrl + '/auth/register', { method: 'POST', signal: AbortSignal.timeout(15000), redirect: 'error', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ role: 'coordinator', password: 'Verification!' + randomBytes(16).toString('hex'), consent: true }) });
     if (denied.status !== 403) throw new Error('The API must reject coordinator privileges through public registration.');
     receipt.destination = { resourceGroup, appName, apiUrl, plan: { name: plan.name, tier: plan.sku?.tier, capacity: plan.sku?.capacity ?? 1 }, runtime: 'net10.0' };
-    receipt.verification = { kuduDeploymentId: deployment.id, kuduStatus: deployment.status, health: { status: health.status, service: health.service, version: health.version }, anonymousWorkspaceStatus: anonymous.status, publicCoordinatorRegistrationStatus: denied.status, authenticatedRolesVerified: false, note: 'Authenticated coordinator/client regression checks require the existing private account passwords; this receipt does not certify them.' };
+    receipt.verification = { kuduDeploymentId: deployment.id, kuduStatus: deployment.status, health: { status: health.status, service: health.service, version: health.version, persistence: health.persistence }, anonymousWorkspaceStatus: anonymous.status, publicCoordinatorRegistrationStatus: denied.status, authenticatedRolesVerified: false, note: 'Authenticated coordinator/client regression checks require the existing private account passwords; this receipt does not certify them.' };
   }
   receipt.completedAt = new Date().toISOString();
   const receiptPath = path.join(scriptRepo, 'docs', `redeployment-${component}.json`);

@@ -6,8 +6,8 @@ The Vue application is organized by bounded context. These folders are logical m
 | --- | --- | --- |
 | Shipment Management | Planning, shipment lists, lifecycle and detail | `src/shipment-management/` |
 | Monitoring and Telemetry | Reading charts, map and thermal status | `src/monitoring/` |
-| Fleet and Resources | Vehicles and drivers | `src/fleet/` |
-| Alert and Reporting | Alert actions and sample traceability exports | `src/alerts-reporting/` |
+| Fleet and Resources | Vehicles, drivers and independent sensors | `src/fleet/` |
+| Alert and Reporting | Corrective actions, persisted JSON reports and CSV exports | `src/alerts-reporting/` |
 | IAM | Access, session profile and preferences | `src/iam/` |
 
 `presentation/pages` and `presentation/components` contain Vue screens and UI components. `domain` contains pure policies and value calculations; it does not import Vue, browser storage or HTTP. Contexts without an independent domain policy do not have empty placeholder layers.
@@ -18,18 +18,18 @@ The local command simulator and seed fixture are under `tests/support/` and `tes
 
 ## Supporting API
 
-The independent Web Services repository is [friotrack-api](https://github.com/upc-pre-202620-1asi0730-8088-FrioTrackk/friotrack-api). The `api/` directory is retained during the repository transition so existing local and deployment commands remain reproducible.
+The independent Web Services repository is [friotrack-api](https://github.com/upc-pre-202620-1asi0730-8088-FrioTrackk/friotrack-api). It owns backend source, EF Core migrations, domain tests, PostgreSQL integration tests and its CI workflow. This frontend repository owns the Vue SPA and gateway contract; its workflow runs frontend tests and the production build. There is no second maintained API copy in the frontend source.
 
 | Layer or module | Responsibility |
 | --- | --- |
-| `api/Program.cs` | Dependency injection, CORS, rate limiting and composition |
-| `api/Interfaces/` | Endpoint mapping, HTTP authorization header extraction and error responses |
-| `api/Shared/Application/` | Session/workspace use cases and validated command processing |
-| `api/Shared/Application/Ports/` | Persistence contract consumed by the application |
-| `api/Shared/Infrastructure/` | JSON file initialization and replacement writes |
-| `api/Iam/Application/Ports/` | Password hashing contract |
-| `api/Iam/Infrastructure/` | PBKDF2 implementation |
+| `Program.cs` | Dependency injection, CORS, rate limiting, persistence selection and Swagger |
+| `Interfaces/` | Domain REST endpoints, authorization headers and localized error responses |
+| Context `Domain/` folders | Shipment, monitoring, fleet, alerts/reporting and IAM rules |
+| `Shared/Application/` | Authorized operations, projections and transactional coordination |
+| `Shared/Application/Ports/` | Aggregate repository and persistence contracts |
+| `Shared/Infrastructure/` | EF Core mappings, migrations and database initialization |
+| `Iam/Infrastructure/` | Salted PBKDF2 password hashing |
 
-The application service depends on persistence and password ports, supplied by dependency injection. It serializes operations with a process lock. HTTP objects and file paths are handled at the interfaces and infrastructure boundaries. The request/response schema, session lifetime, password derivation and command behavior remain compatible with TB1.
+These paths are relative to the API repository. The AV2 adapter maps workspace use cases to domain REST operations. PostgreSQL transactions, organization-level advisory locks and shipment version checks protect reservations and updates. The server owns authorization and tenant boundaries. The workspace projection supports the SPA, while writes use explicit resource endpoints.
 
-The supporting API operates on JSON state. This technical separation does not implement the target DDD aggregate model, PostgreSQL, EF Core repositories, physical sensor ingestion or event dispatch. Those remain explicit backend evolution work. The report's target class diagrams must not be presented as classes already implemented here.
+The API defaults to PostgreSQL. Its historical JSON adapter requires explicit `FRIOTRACK_PERSISTENCE=json` and remains solely for reproducing TB1. The frontend's production gateway uses the AV2 REST contract. Manually recorded telemetry and seeded shipments are demonstration data; no physical sensor ingestion or external event delivery is implied. Target diagrams and historical deployment receipts must be distinguished from the implemented schema and current deployment evidence.

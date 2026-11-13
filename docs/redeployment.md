@@ -1,22 +1,24 @@
-# Redeploy the corrected sources to existing Azure resources
+# Redeploy to existing Azure resources
 
-`scripts/redeploy-existing.mjs` updates the existing FríoTrack static website and API. It does not create resources, enable features, change tiers, reset app settings, generate account passwords or replace `HOME/data/friotrack.json`.
-
-The original provisioning scripts remain historical setup instructions. For an update to the existing resources, use this redeployment tool instead of `deploy-api.mjs`, which also writes initial app settings.
+`scripts/redeploy-existing.mjs` updates the existing FríoTrack static website and .NET 10 API. It does not create resources, change tiers or application settings, migrate a database, initialize accounts or replace persisted data. The old provisioning script has been removed from the current source. Historical TB1 deployment records remain in this repository.
 
 ## Requirements
 
-- Access to the existing Azure subscription, Storage account and App Service. The account needs resource read access, permission to list the Storage upload keys and permission to deploy through Kudu. A GitHub login alone does not grant Azure access.
-- Node.js 22 or later; deployment dependencies installed with `npm ci --prefix scripts`.
-- A clean source checkout for each selected product. The supplied full SHA must equal its checked-out `HEAD`, and the origin must be the corresponding repository in the FríoTrack organization.
-- A production frontend build, a staging directory containing only the published landing files, and/or a ZIP of the standalone .NET 10 API publish output. Build each artifact from the recorded clean revision before deployment.
-- Existing Azure configuration: `friotracktb1bce6db1b`, `$web`, `/landing/`, and `friotrack-api-bce6db1b`, configured for .NET 10 and one instance. The tool aborts if the existing resource or required configuration is absent.
+- An Azure account authorized to read the existing resources and API settings, list the Storage upload keys and deploy through Kudu. GitHub access does not grant Azure access.
+- Node.js 22 or later and deployment dependencies installed with `npm ci --prefix scripts`.
+- A clean checkout for each selected product. The full source SHA must equal its checked-out `HEAD`, and its origin must be the corresponding repository in the FríoTrack organization.
+- Artifacts built from those recorded revisions: the frontend `dist/`, a directory containing only the landing's public files, and/or the canonical `friotrack-api` publish ZIP.
+- Existing resources `friotracktb1bce6db1b`, `$web`, `/landing/` and `friotrack-api-bce6db1b`. The API must already use .NET 10 and have an accessible PostgreSQL database with the reviewed EF Core migrations applied.
 
-The command uses Microsoft device authentication and prints the official sign-in URL and one-time code. Complete that sign-in yourself in a browser. It does not open or control your screen. One credential instance is shared across a batch; access tokens and Storage keys stay in process memory and are not written to the receipts.
+For an AV2 API upload, the tool reads the existing settings into memory and requires PostgreSQL mode and a nonempty `FRIOTRACK_DB` or `ConnectionStrings__FrioTrack`. It refuses an explicit JSON mode, automatic migrations (`FRIOTRACK_MIGRATE=true`) or automatic seeding (`FRIOTRACK_SEED=true`). Settings and connection strings are never printed or saved to the receipt. This prevents uploading the relational API over a TB1 service whose database has not been prepared.
+
+Database hosting, access rules, backups, reviewed migration application and any initial demonstration accounts must be arranged separately before deployment. Use private credentials and a database intended for FríoTrack; do not point local test scripts at a hosted or production database. The Docker Compose database in `friotrack-api` is local development infrastructure, not cloud hosting. No new cloud database or AV2 deployment is implied by these source files.
+
+The AV2 SPA requires the domain REST API. A frontend-only deployment checks the existing public API's health before any upload and requires version 0.2.0 or later with PostgreSQL persistence. A batch containing both API and frontend must put the API first; an incompatible order is rejected before authentication. After the API upload succeeds, backend compatibility is checked again immediately before uploading the frontend. A running TB1 JSON API is not compatible with the new SPA. The frontend receipt records the backend version and persistence actually observed.
 
 ## Build the artifacts
 
-From the frontend repository:
+From this frontend repository:
 
 ```powershell
 npm ci
@@ -25,36 +27,40 @@ npm run build
 npm ci --prefix scripts
 ```
 
-From the canonical `friotrack-api` repository, with the .NET 10 SDK available in `PATH`:
+From the independent [friotrack-api repository](https://github.com/upc-pre-202620-1asi0730-8088-FrioTrackk/friotrack-api), with the .NET 10 SDK in `PATH`:
 
 ```powershell
+dotnet test tests/FrioTrack.Api.Tests/FrioTrack.Api.Tests.csproj -c Release
 dotnet publish FrioTrack.Api.csproj -c Release -o output/api-publish --no-self-contained
+node scripts/test-postgres.mjs
 node scripts/test-api.mjs
 ```
 
-Create a ZIP containing the files inside `output/api-publish`, with `FrioTrack.Api.dll`, `FrioTrack.Api.runtimeconfig.json` and `seed.json` at the ZIP root. Do not include a populated `data/` directory. Do not package the outer `api-publish` folder as the root entry.
+The PostgreSQL integration suite requires `FRIOTRACK_TEST_DB` to identify an isolated loopback PostgreSQL server and `psql` in `PATH` (or `FRIOTRACK_PSQL`). It creates and removes its own random test database. Consult the API README for the local configuration; never use a cloud connection for this suite. The last command tests the explicit historical JSON adapter.
 
-Stage the landing from its own clean repository using only `index.html`, `Terms-and-Condition.html`, `assets/` and `i18n/`. Its directory is deployed beneath `/landing/`; the staging directory itself must have `index.html` at its root. Do not include `.git`, account credentials, deployment caches or unrelated documentation.
+Create a ZIP containing the files *inside* `output/api-publish`. `FrioTrack.Api.dll`, `FrioTrack.Api.runtimeconfig.json`, `FrioTrack.Api.deps.json` and `seed.json` must be at its root. Exclude populated `data/` directories, private settings and credentials. The tool verifies the .NET 10 runtime and that the packaged application version matches the canonical source project (0.2.0 or later).
 
-## Preflight without authentication
+Stage the landing from its own clean repository using only `index.html`, `Terms-and-Condition.html`, `assets/` and `i18n/`. Its directory must have `index.html` at its root; deployment places it beneath `/landing/`.
 
-For one component, replace the paths and full SHA:
+## Check without authentication
+
+Replace paths and SHA with actual values:
 
 ```powershell
 node scripts/redeploy-existing.mjs --component frontend --artifact dist --source-repo . --source-sha <full-frontend-SHA> --check
 ```
 
-`--check` validates the clean Git revision and local artifact only. It does not authenticate, contact Azure or publish anything. API preflight checks ZIP entries and the `.NET 10` runtime configuration. Static preflight rejects secret files and symlinks. A frontend artifact cannot contain `landing/`, because the landing must be published from its independent source.
+`--check` validates the local source revision, artifact and component order. It does not authenticate, inspect Azure settings, contact the backend or publish. Static checks reject secret files and symlinks. A frontend artifact cannot contain `landing/`, because the landing has its own source and publication.
 
-## Deploy a batch with one Microsoft sign-in
+## Deploy with one Microsoft sign-in
 
-Create a local plan outside the source checkouts. It is a JSON array; each component may appear at most once. Use absolute paths and real full SHAs in place of the examples:
+For multiple components, create a private plan outside the source checkouts. Each component may appear once; use absolute paths and real SHAs:
 
 ```json
 [
   {
     "component": "api",
-    "artifact": "C:/path/to/api/output/friotrack-api.zip",
+    "artifact": "C:/path/to/friotrack-api/output/friotrack-api.zip",
     "sourceRepo": "C:/path/to/friotrack-api",
     "sourceSha": "<full-api-SHA>"
   },
@@ -80,18 +86,14 @@ node scripts/redeploy-existing.mjs --plan C:/path/to/deployment-plan.json --chec
 node scripts/redeploy-existing.mjs --plan C:/path/to/deployment-plan.json
 ```
 
-All local sources and artifacts are checked before sign-in. After authentication, all destination resources are read and checked before the first upload. The batch runs in plan order, with one Microsoft credential shared by the selected components. A failure aborts the remaining components; receipts for already completed components remain valid. This is not an atomic transaction across the three products.
+All local checks finish before authentication. The tool displays Microsoft's sign-in URL and one-time device code; complete the sign-in yourself. It does not open or control your screen. Tokens and Storage keys stay in memory. All destinations and required API settings are checked before the first upload. The batch then follows plan order. A failure stops the remaining components; this is not a transaction across products.
 
-Static uploads preserve unrelated files and upload HTML entry points after the other files. Every uploaded file is fetched from its public URL and compared byte-for-byte by SHA-256. Old hashed assets are retained; the command does not delete another product's files.
+Static uploads preserve unrelated files, publish entry-point HTML last and compare every uploaded public file against its local SHA-256. API deployment uploads only the supplied ZIP to the existing Kudu endpoint and waits for successful completion. It changes no application settings or database contents. Polls are bounded and pause at most five seconds between checks.
 
-API deployment uploads only the supplied ZIP to the existing Kudu endpoint and records the returned deployment ID and successful completion status. It does not modify app settings, rotate the initial passwords, read private database contents or overwrite the persisted JSON file outside the application package. Polls are bounded and wait at most five seconds between checks.
+## Evidence
 
-## Evidence and remaining authenticated review
+Successful components produce `docs/redeployment-frontend.json`, `docs/redeployment-landing.json` and/or `docs/redeployment-api.json`. Receipts include source repository/SHA, artifact hashes, destination, verification and timestamps; API receipts include the Kudu deployment ID. Local `--check` output is not deployment evidence.
 
-Successful components write `docs/redeployment-frontend.json`, `docs/redeployment-landing.json` and/or `docs/redeployment-api.json`. Each receipt contains its source repository, full source SHA, artifact hashes, destination, verification result and timestamp. The API receipt also contains its actual Kudu deployment ID. Do not claim publication from `--check` output or from an incomplete batch.
+API smoke checks require the packaged version and PostgreSQL persistence in health, anonymous workspace rejection (`401`) and rejection of public coordinator registration (`403`). They do not certify database connectivity, the migration state or authenticated business flows. The team must verify coordinator/client operations with the existing private accounts after deployment and record the results. Do not publish passwords in source, the report or screenshots.
 
-The API smoke checks verify health, anonymous workspace rejection (`401`) and rejection of a coordinator role through public registration (`403`). They do not create a user, replace credentials or certify authenticated coordinator/client flows. For that final review, the team must use the existing private account passwords. Do not paste passwords into the report, source control or public screenshots.
-
-These source-to-artifact receipts document what was uploaded. The API health response currently identifies the service version, not a compiled Git revision; the Kudu ID and ZIP SHA provide the deployment trace. Build the package from the recorded source rather than treating an operator-supplied SHA as a substitute for a reproducible build.
-
-A separate PostgreSQL database is not required to redeploy this TB1 JSON-backed demo. PostgreSQL, typed DDD aggregates and physical telemetry remain planned work; creating a database alone would not implement or validate them.
+The health endpoint reports an application version, not a compiled Git revision. Build from the clean recorded source; use its ZIP SHA and Kudu ID for the upload trace. Receipts from older versions remain historical evidence and do not prove an AV2 publication.
