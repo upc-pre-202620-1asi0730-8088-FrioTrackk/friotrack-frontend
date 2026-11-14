@@ -1,10 +1,10 @@
 import { execFileSync } from 'node:child_process';
-import { createHash, randomBytes } from 'node:crypto';
+import { createHash } from 'node:crypto';
 import { readFile, readdir, lstat, realpath, writeFile, mkdir } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { inflateRawSync } from 'node:zlib';
 import path from 'node:path';
-import { requirePreparedPostgres, requireCompatibleBackend, requireCompatibleDeploymentOrder } from './deployment-policy.mjs';
+import { requirePreparedPostgres, requireCompatibleBackend, requireCompatibleDeploymentOrder, createCoordinatorRegistrationProbe } from './deployment-policy.mjs';
 
 const usage = `Redeploy an existing FríoTrack resource without changing its settings.
 node scripts/redeploy-existing.mjs --component frontend|landing|api --artifact <dist-directory|api.zip> --source-repo <repository-directory> --source-sha <full-Git-SHA> [--check]
@@ -208,6 +208,7 @@ try {
     receipt.verification = { checkedFiles: checks.length, allHashesMatch: true, checks };
   } else {
     const { plan, scmHost } = cloud;
+    const registrationProbe = createCoordinatorRegistrationProbe();
     const upload = await authorizedFetch(`https://${scmHost}/api/zipdeploy?isAsync=true`, { method: 'POST', headers: { 'Content-Type': 'application/zip' }, body: packageBytes });
     if (!upload.ok) throw new Error('Kudu upload failed: HTTP ' + upload.status);
     const location = new URL(upload.headers.get('location') || '/api/deployments/latest', `https://${scmHost}`);
@@ -232,7 +233,7 @@ try {
     if (health?.status !== 'ok' || health?.service !== 'FrioTrack' || health?.persistence !== 'postgresql' || health?.version !== apiVersion) throw new Error('The deployed API must report the packaged PostgreSQL service version.');
     const anonymous = await fetch(apiUrl + '/workspace', { signal: AbortSignal.timeout(15000), redirect: 'error' });
     if (anonymous.status !== 401) throw new Error('The API must reject anonymous workspace access.');
-    const denied = await fetch(apiUrl + '/auth/register', { method: 'POST', signal: AbortSignal.timeout(15000), redirect: 'error', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ role: 'coordinator', password: 'Verification!' + randomBytes(16).toString('hex'), consent: true }) });
+    const denied = await fetch(apiUrl + '/auth/register', { method: 'POST', signal: AbortSignal.timeout(15000), redirect: 'error', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(registrationProbe) });
     if (denied.status !== 403) throw new Error('The API must reject coordinator privileges through public registration.');
     receipt.destination = { resourceGroup, appName, apiUrl, plan: { name: plan.name, tier: plan.sku?.tier, capacity: plan.sku?.capacity ?? 1 }, runtime: 'net10.0' };
     receipt.verification = { kuduDeploymentId: deployment.id, kuduStatus: deployment.status, health: { status: health.status, service: health.service, version: health.version, persistence: health.persistence }, anonymousWorkspaceStatus: anonymous.status, publicCoordinatorRegistrationStatus: denied.status, authenticatedRolesVerified: false, note: 'Authenticated coordinator/client regression checks require the existing private account passwords; this receipt does not certify them.' };

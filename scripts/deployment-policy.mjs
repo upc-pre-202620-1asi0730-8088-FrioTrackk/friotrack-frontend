@@ -1,3 +1,5 @@
+import { randomBytes } from 'node:crypto';
+
 export function requirePreparedPostgres(settings) {
   const mode = settings.FRIOTRACK_PERSISTENCE ?? 'postgres';
   const connection = settings.FRIOTRACK_DB ?? settings.ConnectionStrings__FrioTrack;
@@ -24,4 +26,15 @@ export function requireCompatibleDeploymentOrder(components) {
   if (api >= 0 && frontend >= 0 && api > frontend) {
     throw new Error('Place the API before the frontend in the deployment plan so its REST contract is verified before the SPA upload.');
   }
+}
+
+export function createCoordinatorRegistrationProbe() {
+  return {
+    name: 'Deployment verification',
+    email: `deployment-verification-${randomBytes(16).toString('hex')}@example.invalid`,
+    organization: 'FrioTrack verification',
+    password: 'Verification!' + randomBytes(16).toString('hex'),
+    consent: true,
+    role: 'coordinator'
+  };
 }

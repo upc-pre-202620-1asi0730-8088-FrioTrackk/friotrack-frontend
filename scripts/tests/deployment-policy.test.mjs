@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { requirePreparedPostgres, requireCompatibleBackend, requireCompatibleDeploymentOrder } from '../deployment-policy.mjs';
+import { requirePreparedPostgres, requireCompatibleBackend, requireCompatibleDeploymentOrder, createCoordinatorRegistrationProbe } from '../deployment-policy.mjs';
 
 const database = 'Host=private.invalid;Database=example;Username=example;Password=test-only';
 
@@ -60,4 +60,25 @@ test('a combined deployment cannot publish the SPA before its REST backend', () 
   assert.doesNotThrow(() => requireCompatibleDeploymentOrder(['api', 'frontend', 'landing']));
   assert.doesNotThrow(() => requireCompatibleDeploymentOrder(['frontend']));
   assert.doesNotThrow(() => requireCompatibleDeploymentOrder(['landing', 'api']));
+});
+
+test('the forbidden-role probe includes every required registration constructor parameter', () => {
+  const body = JSON.parse(JSON.stringify(createCoordinatorRegistrationProbe()));
+  for (const field of ['name', 'email', 'organization', 'password', 'consent']) {
+    assert.ok(Object.hasOwn(body, field), `RegistrationRequest requires ${field}; omission produces 400 before the role check`);
+  }
+  for (const field of ['name', 'organization']) assert.ok(typeof body[field] === 'string' && body[field].trim());
+  assert.match(body.email, /^[a-z0-9-]+@example\.invalid$/);
+  assert.ok(body.email.split('@')[0].length <= 64);
+  assert.ok(body.password.length >= 12 && body.password.length <= 128);
+  assert.equal(body.consent, true);
+  assert.equal(body.role, 'coordinator');
+});
+
+test('registration probes use fresh credentials and a non-deliverable address', () => {
+  const first = createCoordinatorRegistrationProbe(), second = createCoordinatorRegistrationProbe();
+  assert.notEqual(first.email, second.email);
+  assert.notEqual(first.password, second.password);
+  assert.ok(first.email.endsWith('@example.invalid'));
+  assert.ok(second.email.endsWith('@example.invalid'));
 });
