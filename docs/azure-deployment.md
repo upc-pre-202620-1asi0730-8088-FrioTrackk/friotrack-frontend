@@ -1,6 +1,6 @@
 # Historical TB1 Azure deployment and execution evidence
 
-This page and its linked receipts describe the original TB1 JSON-backed publication. They do not certify the current AV2 REST/PostgreSQL source or its deployment. Use [redeployment instructions](redeployment.md) for current updates, after preparing the hosted database. The API source is maintained independently in `friotrack-api`.
+This page and its linked receipts describe the original TB1 JSON-backed publication. The current AV2 REST/PostgreSQL publication is recorded in the [API](redeployment-api.json) and [frontend](redeployment-frontend.json) receipts. The [redeployment guide](redeployment.md) documents updates to the existing resources. The API source is maintained independently in `friotrack-api`.
 
 The frontend now uses email/password authentication through its supporting ASP.NET Core API. Academic labels and the sample-profile selector have been removed from the application interface. Operational seed records remain fictional; simulated readings are identified beside the monitoring view and in reports.
 
@@ -52,4 +52,4 @@ The stored file verification describes the original combined Azure publication, 
 
 ![Client CTA on the published landing](evidence/landing-client-cta-es.jpg)
 
-The screenshots show the TB1 integrated browser viewport; they do not certify all screen sizes or full accessibility compliance. That version used a single-instance file store. The AV2 source adds relational persistence and organization-scoped operations; those changes require their own tests and deployment evidence. Physical sensors, password recovery, verified emails and external notifications remain outside these historical checks.
+The screenshots show the TB1 integrated browser viewport; they do not certify all screen sizes or full accessibility compliance. That version used a single-instance file store. The AV2 publication uses relational persistence and organization-scoped operations, documented in its deployment receipts and [public browser verification](public-interview-verification.json). Physical sensors, password recovery, verified emails and external notifications remain outside these historical checks.

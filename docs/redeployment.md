@@ -12,7 +12,7 @@
 
 For an AV2 API upload, the tool reads the existing settings into memory and requires PostgreSQL mode and a nonempty `FRIOTRACK_DB` or `ConnectionStrings__FrioTrack`. It refuses an explicit JSON mode, automatic migrations (`FRIOTRACK_MIGRATE=true`) or automatic seeding (`FRIOTRACK_SEED=true`). Settings and connection strings are never printed or saved to the receipt. This prevents uploading the relational API over a TB1 service whose database has not been prepared.
 
-Database hosting, access rules, backups, reviewed migration application and any initial demonstration accounts must be arranged separately before deployment. Use private credentials and a database intended for FríoTrack; do not point local test scripts at a hosted or production database. The Docker Compose database in `friotrack-api` is local development infrastructure, not cloud hosting. No new cloud database or AV2 deployment is implied by these source files.
+Database migration and account initialization are separate operations from this deployment tool. The published AV2 service uses PostgreSQL 17 on Neon; the deployment script expects an existing, configured database. Credentials remain private, and local integration suites use isolated loopback databases. The Docker Compose database in `friotrack-api` is local development infrastructure.
 
 The AV2 SPA requires the domain REST API. A frontend-only deployment checks the existing public API's health before any upload and requires version 0.2.0 or later with PostgreSQL persistence. A batch containing both API and frontend must put the API first; an incompatible order is rejected before authentication. After the API upload succeeds, backend compatibility is checked again immediately before uploading the frontend. A running TB1 JSON API is not compatible with the new SPA. The frontend receipt records the backend version and persistence actually observed.
 
@@ -94,7 +94,7 @@ Static uploads preserve unrelated files, publish entry-point HTML last and compa
 
 Successful components produce `docs/redeployment-frontend.json`, `docs/redeployment-landing.json` and/or `docs/redeployment-api.json`. Receipts include source repository/SHA, artifact hashes, destination, verification and timestamps; API receipts include the Kudu deployment ID. Local `--check` output is not deployment evidence.
 
-API smoke checks require the packaged version and PostgreSQL persistence in health, anonymous workspace rejection (`401`) and rejection of public coordinator registration (`403`). They do not certify database connectivity, the migration state or authenticated business flows. The team must verify coordinator/client operations with the existing private accounts after deployment and record the results. Do not publish passwords in source, the report or screenshots.
+API smoke checks require the packaged version and PostgreSQL persistence in health, anonymous workspace rejection (`401`) and rejection of public coordinator registration (`403`). These smoke checks cover service identity and anonymous access restrictions. Authenticated coordinator/client flows are documented separately in the [public browser verification](public-interview-verification.json). Passwords are excluded from source, the report and screenshots.
 
 The health endpoint reports an application version, not a compiled Git revision. Build from the clean recorded source; use its ZIP SHA and Kudu ID for the upload trace. Receipts from older versions remain historical evidence and do not prove an AV2 publication.
 

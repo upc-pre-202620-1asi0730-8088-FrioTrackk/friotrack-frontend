@@ -4,15 +4,15 @@ Shipment management for refrigerated transport, built with Vue 3, PrimeVue 4 and
 
 The AV2 client consumes the resource REST API in the independent [friotrack-api](https://github.com/upc-pre-202620-1asi0730-8088-FrioTrackk/friotrack-api) repository. The application port remains stable while the HTTP gateway maps operations to shipment, fleet, sensor, alert, profile and notification resources. The AV2 backend uses PostgreSQL and Entity Framework Core; configure and run that canonical project before using this frontend revision. Account permissions are checked by the server.
 
-Readings remain simulated and are identified in monitoring views and CSV exports. A frontend source update does not deploy the AV2 backend or change the existing Azure data.
+Readings remain simulated and are identified in monitoring views and CSV exports. The deployed service uses PostgreSQL and preserves the migrated historical data.
 
 ## Published AV2 application
 
 The AV2 SPA is available at [FrioTrack](https://friotracktb1bce6db1b.z22.web.core.windows.net/), connected to the [PostgreSQL-backed API](https://friotrack-api-bce6db1b.azurewebsites.net/api/health). The landing remains available on [GitHub Pages](https://upc-pre-202620-1asi0730-8088-friotrackk.github.io/friotrack-landing/) and [Azure](https://friotracktb1bce6db1b.z22.web.core.windows.net/landing/).
 
-Frontend `0.2.1` fixes map links so that a reading identifier cannot replace its shipment identifier. The [frontend receipt](docs/redeployment-frontend.json), [API receipt](docs/redeployment-api.json), [landing receipt](docs/redeployment-landing.json) and [14 public browser checks](docs/public-interview-verification.json) identify the published artifacts and verified behavior. Demonstration accounts are isolated from historical data and their credentials are distributed privately. These technical checks do not replace participant interviews or team acceptance.
+Frontend `0.2.1` fixes map links so that a reading identifier cannot replace its shipment identifier. The [frontend receipt](docs/redeployment-frontend.json), [API receipt](docs/redeployment-api.json), [landing receipt](docs/redeployment-landing.json) and [14 public browser checks](docs/public-interview-verification.json) identify the published artifacts and verified behavior. Demonstration accounts are isolated from historical data and their credentials are distributed privately. The verification covers the deployed coordinator and cargo-client demonstration workflows.
 
-## Existing TB1 publication
+## Published application URLs
 
 | Entry | URL |
 | --- | --- |
@@ -22,7 +22,7 @@ Frontend `0.2.1` fixes map links so that a reading identifier cannot replace its
 | Landing | https://friotracktb1bce6db1b.z22.web.core.windows.net/landing/ |
 | API health | https://friotrack-api-bce6db1b.azurewebsites.net/api/health |
 
-These URLs document the existing deployment; this source revision must be published with its compatible AV2 API before those URLs can be used as AV2 execution evidence.
+These URLs serve the AV2 SPA and its compatible REST/PostgreSQL API. The original TB1 publication is documented separately in the [historical deployment records](docs/azure-deployment.md).
 
 The initial accounts are `coordinador@friotrack.app` and `cliente@friotrack.app`. Their generated deployment passwords are delivered privately and excluded from this repository and the public frontend bundle. Changing the `role` parameter in a link only changes the access heading; it cannot grant permissions.
 
@@ -30,7 +30,7 @@ The initial accounts are `coordinador@friotrack.app` and `cliente@friotrack.app`
 
 Requires Node 20.19+ or 22.12+ and npm. The canonical API requires the .NET 10 SDK and a PostgreSQL database.
 
-1. Follow [the canonical API setup](https://github.com/upc-pre-202620-1asi0730-8088-FrioTrackk/friotrack-api#local-execution). Configure `FRIOTRACK_DB`, allowed origins and private initial passwords in your local environment. Apply migrations and opt in to demonstration seeding only for a new database.
+1. Follow [the canonical API setup](https://github.com/upc-pre-202620-1asi0730-8088-FrioTrackk/friotrack-api#run-locally). Configure `FRIOTRACK_DB`, allowed origins and private initial passwords in your local environment. Apply migrations and opt in to demonstration seeding only for a new database.
 2. Start the API on `http://localhost:5080`.
 3. Run the frontend in another terminal:
 
@@ -58,7 +58,7 @@ The development frontend runs at `http://127.0.0.1:5173`. `.env.example` documen
 
 The five feature contexts are `shipment-management`, `monitoring`, `fleet`, `alerts-reporting` and `iam`. Shared UI, use cases and adapters are separated by responsibility. Policies under `domain` are pure JavaScript; seed fixtures and the local command simulator live only under `tests/`. See [code structure and dependency direction](docs/code-structure.md).
 
-Sensors have their own inventory tab and may remain unassigned. The vehicle form no longer requires creating a sensor as part of a vehicle. An assignment references an available vehicle and is validated by the server. Resource changes and shipment actions show pending feedback and prevent duplicate form submissions.
+Sensors have their own inventory tab and may remain unassigned. The vehicle form no longer requires creating a sensor as part of a vehicle. An assignment references an available vehicle and is validated by the server. Resource changes and shipment actions show in-progress feedback and prevent duplicate form submissions.
 
 ## REST operations
 
@@ -85,7 +85,7 @@ npm test
 npm run build
 ```
 
-The frontend suite has 25 tests: 15 policy/simulator regressions and ten application/gateway tests. The wire contract covers 16 resource operations, URI encoding, HTTP verbs, version conflicts and language headers. Session tests cover registration, expiry, logout revocation requests, rejected state updates and responses arriving after sign-out. Production compilation succeeds independently of the API process; it does not prove live integration. PostgreSQL integration and headless acceptance receipts must be recorded separately against the exact API revision.
+The frontend suite covers policy/simulator regressions and application/gateway behavior. The wire contract covers 16 resource operations, URI encoding, HTTP verbs, version conflicts and language headers. Session tests cover registration, expiry, logout revocation requests, rejected state updates and responses arriving after sign-out. The production build generates the static SPA. The [public browser verification](docs/public-interview-verification.json) records integration checks against the published API.
 
 ## Azure deployment
 
@@ -95,6 +95,6 @@ The landing has a separate source repository. Its updated code is not duplicated
 
 ## Boundaries
 
-The existing TB1 deployment uses a single-instance JSON store. The AV2 source targets a relational API and continues to identify all demonstration readings as simulated. It does not ingest physical sensors, send email/SMS, process payments, verify emails, recover passwords or issue sensor audit certificates. Production readiness requires deployment validation, account recovery, backups and real sensor integration beyond this course demonstration. The terms are an informational project draft. The checks and screenshots do not establish complete WCAG compliance.
+The historical TB1 publication used a single-instance JSON store. The current AV2 publication uses the relational API and identifies demonstration readings as simulated. It does not ingest physical sensors, send email/SMS, process payments, verify emails, recover passwords or issue sensor audit certificates. The terms are an informational project draft. The checks and screenshots do not establish complete WCAG compliance.
 
 The repository uses `feature/* → develop`, then a reviewed `release/* → main` integration with the result returned to `develop`. Emergency fixes use `hotfix/*` from `main` and are integrated into both branches. Commits use Conventional Commits and describe one coherent change. New code revisions require a separate deployment before the published Azure URLs can be attributed to them.
