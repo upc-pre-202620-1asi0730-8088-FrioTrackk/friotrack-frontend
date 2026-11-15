@@ -16,7 +16,7 @@ function updateMapLanguage() {
   map.attributionControl.addAttribution(tileAttribution);
   if (tiles) tiles.options.attribution = tileAttribution;
 }
-const points = computed(() => props.shipments.filter(item => item.readings.length).map(item => ({ id: item.id, ...item.readings.at(-1), origin: item.origin, destination: item.destination })));
+const points = computed(() => props.shipments.filter(item => item.readings.length).map(item => ({ ...item.readings.at(-1), id: item.id, origin: item.origin, destination: item.destination })));
 const project = (point) => ({ x: 60 + ((point.lng + 81.8) / 8) * 490, y: 35 + ((-4.0 - point.lat) / 11.8) * 310 });
 function drawMap() {
   if (!map) return;
