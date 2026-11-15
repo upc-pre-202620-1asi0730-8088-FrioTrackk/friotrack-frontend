@@ -1,0 +1,178 @@
+{
+  "component": "landing",
+  "completedAt": "2026-11-15T00:29:31.379Z",
+  "sourceRepository": "https://github.com/upc-pre-202620-1asi0730-8088-FrioTrackk/friotrack-landing",
+  "sourceSha": "36f206712d0952b41ad6b3e6893645d9a0fcc682",
+  "artifact": {
+    "files": [
+      {
+        "path": "assets/css/styles.css",
+        "bytes": 51622,
+        "sha256": "84cb2925f275ae5bd7aad8a0a052ab18821875b8596584e85e6fe4f0dc2fab39"
+      },
+      {
+        "path": "assets/images/logo.svg",
+        "bytes": 8254,
+        "sha256": "1b9d36305d65732abb80bae0992068bfb7293d4c0372e86dc765dba2ab323c53"
+      },
+      {
+        "path": "assets/images/og-friotrack.png",
+        "bytes": 255474,
+        "sha256": "dc9c88e5e20b9f18d08b2713cc976128959b7f0b415beca7430ab9eb62038e0a"
+      },
+      {
+        "path": "assets/images/team/README.txt",
+        "bytes": 331,
+        "sha256": "2b006a50ded342707b98c41c3330db826d95c451ce6a73f47b7425a203c12e9c"
+      },
+      {
+        "path": "assets/images/team/u20241f246.png",
+        "bytes": 153595,
+        "sha256": "643db59620fdc1edd50f96b5c6298e3ed3781aea19024b04cbf652e75359d9c7"
+      },
+      {
+        "path": "assets/js/app.js",
+        "bytes": 10010,
+        "sha256": "73b48a1d64cafab64a7317617e3ff87f678fdc5390c7aa8ea2a996c9f10af1b6"
+      },
+      {
+        "path": "assets/js/config.js",
+        "bytes": 424,
+        "sha256": "7e687c5e890c0fce5d8bebe30b461246d7fb4697ad07b5689feeca091b07dd15"
+      },
+      {
+        "path": "assets/js/hero-sim.js",
+        "bytes": 7566,
+        "sha256": "4356d253166208caffb87f1eec8ca8f2f223cf698c63b5df75344213eb06f528"
+      },
+      {
+        "path": "assets/js/i18n.js",
+        "bytes": 4638,
+        "sha256": "3b13c99d28b7710ae1a52386c825d4d095ccb222b07cbed94cd265197fee55ef"
+      },
+      {
+        "path": "assets/js/ui.js",
+        "bytes": 2455,
+        "sha256": "d5ae3ec7cf85d2ea0dc8f84b21f9d5a3c985831c085ef411fe36e01e065dd0fc"
+      },
+      {
+        "path": "assets/js/videos.js",
+        "bytes": 2397,
+        "sha256": "68f2086e515d26887bccb5d6857da6c689ef16719d42c5b33fd4991075661d2c"
+      },
+      {
+        "path": "i18n/en.js",
+        "bytes": 15703,
+        "sha256": "796893c7edfa4a06ca7e32e91526f170efa5ecdcd3987af0aa3bc8425dd1eebf"
+      },
+      {
+        "path": "i18n/es.js",
+        "bytes": 16850,
+        "sha256": "e90f1da2d404e5ad8125ffe6e95b9088727911618fc2bdbe48c131c642750041"
+      },
+      {
+        "path": "index.html",
+        "bytes": 56414,
+        "sha256": "71deff460e25dda9159fb1568ffee58d384f7982a22603189b2dd59621f77ee1"
+      },
+      {
+        "path": "Terms-and-Condition.html",
+        "bytes": 9751,
+        "sha256": "d926d5426164db2ce080808bfc7081aa9f9a7cb4e6eeaee1185fcb9daa8e7016"
+      }
+    ],
+    "manifestSha256": "fc910851051410e21ae175eb800cd16bd66d0db4ad8780d92ea2c68a7d59b96c"
+  },
+  "destination": {
+    "resourceGroup": "rg-friotrack-tb1",
+    "storageAccount": "friotracktb1bce6db1b",
+    "endpoint": "https://friotracktb1bce6db1b.z22.web.core.windows.net/",
+    "pathPrefix": "/landing/"
+  },
+  "backendCompatibility": {
+    "version": "0.2.0",
+    "persistence": "postgresql"
+  },
+  "verification": {
+    "allHashesMatch": true,
+    "checkedFiles": 15,
+    "checks": [
+      {
+        "path": "landing/assets/css/styles.css",
+        "status": 200,
+        "sha256": "84cb2925f275ae5bd7aad8a0a052ab18821875b8596584e85e6fe4f0dc2fab39"
+      },
+      {
+        "path": "landing/assets/images/logo.svg",
+        "status": 200,
+        "sha256": "1b9d36305d65732abb80bae0992068bfb7293d4c0372e86dc765dba2ab323c53"
+      },
+      {
+        "path": "landing/assets/images/og-friotrack.png",
+        "status": 200,
+        "sha256": "dc9c88e5e20b9f18d08b2713cc976128959b7f0b415beca7430ab9eb62038e0a"
+      },
+      {
+        "path": "landing/assets/images/team/README.txt",
+        "status": 200,
+        "sha256": "2b006a50ded342707b98c41c3330db826d95c451ce6a73f47b7425a203c12e9c"
+      },
+      {
+        "path": "landing/assets/images/team/u20241f246.png",
+        "status": 200,
+        "sha256": "643db59620fdc1edd50f96b5c6298e3ed3781aea19024b04cbf652e75359d9c7"
+      },
+      {
+        "path": "landing/assets/js/app.js",
+        "status": 200,
+        "sha256": "73b48a1d64cafab64a7317617e3ff87f678fdc5390c7aa8ea2a996c9f10af1b6"
+      },
+      {
+        "path": "landing/assets/js/config.js",
+        "status": 200,
+        "sha256": "7e687c5e890c0fce5d8bebe30b461246d7fb4697ad07b5689feeca091b07dd15"
+      },
+      {
+        "path": "landing/assets/js/hero-sim.js",
+        "status": 200,
+        "sha256": "4356d253166208caffb87f1eec8ca8f2f223cf698c63b5df75344213eb06f528"
+      },
+      {
+        "path": "landing/assets/js/i18n.js",
+        "status": 200,
+        "sha256": "3b13c99d28b7710ae1a52386c825d4d095ccb222b07cbed94cd265197fee55ef"
+      },
+      {
+        "path": "landing/assets/js/ui.js",
+        "status": 200,
+        "sha256": "d5ae3ec7cf85d2ea0dc8f84b21f9d5a3c985831c085ef411fe36e01e065dd0fc"
+      },
+      {
+        "path": "landing/assets/js/videos.js",
+        "status": 200,
+        "sha256": "68f2086e515d26887bccb5d6857da6c689ef16719d42c5b33fd4991075661d2c"
+      },
+      {
+        "path": "landing/i18n/en.js",
+        "status": 200,
+        "sha256": "796893c7edfa4a06ca7e32e91526f170efa5ecdcd3987af0aa3bc8425dd1eebf"
+      },
+      {
+        "path": "landing/i18n/es.js",
+        "status": 200,
+        "sha256": "e90f1da2d404e5ad8125ffe6e95b9088727911618fc2bdbe48c131c642750041"
+      },
+      {
+        "path": "landing/index.html",
+        "status": 200,
+        "sha256": "71deff460e25dda9159fb1568ffee58d384f7982a22603189b2dd59621f77ee1"
+      },
+      {
+        "path": "landing/Terms-and-Condition.html",
+        "status": 200,
+        "sha256": "d926d5426164db2ce080808bfc7081aa9f9a7cb4e6eeaee1185fcb9daa8e7016"
+      }
+    ]
+  },
+  "scope": "Published AV2 public files; unrelated existing files retained."
+}

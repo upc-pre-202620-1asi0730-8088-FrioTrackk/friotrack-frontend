@@ -1,0 +1,228 @@
+{
+  "component": "frontend",
+  "completedAt": "2026-11-15T00:29:25.933Z",
+  "sourceRepository": "https://github.com/upc-pre-202620-1asi0730-8088-FrioTrackk/friotrack-frontend",
+  "sourceSha": "574f3c1db91aee1e8cd1d4800b6de3597065414b",
+  "artifact": {
+    "files": [
+      {
+        "path": "assets/index-D3f_K87u.js",
+        "bytes": 109373,
+        "sha256": "5839715bdc02de5ecab7a32ce3e3e53f1a6ecd2e93f6b4c7591cd057cc0f0337"
+      },
+      {
+        "path": "assets/index-DEFquSPh.css",
+        "bytes": 63439,
+        "sha256": "dd697af59174374bda560027e80a54d2c7aa8b7a4cbbb6581961f7bd0c8bfe9f"
+      },
+      {
+        "path": "assets/inter-latin-400-normal-C38fXH4l.woff2",
+        "bytes": 23664,
+        "sha256": "8909904ab6c872eb994093482a88a28eca2cd95912d7b6fecd72103b0dc07edc"
+      },
+      {
+        "path": "assets/inter-latin-400-normal-CyCys3Eg.woff",
+        "bytes": 30696,
+        "sha256": "e20fa0b4fd2dd26e4d14b3ac3cc922509c3a63fa5e910e90c614544aa042dd45"
+      },
+      {
+        "path": "assets/inter-latin-500-normal-BL9OpVg8.woff",
+        "bytes": 31284,
+        "sha256": "9b42c108da48b5ed55a3072e815ffee2d271562e6c0dd6998910e8f9c09e0a3d"
+      },
+      {
+        "path": "assets/inter-latin-500-normal-Cerq10X2.woff2",
+        "bytes": 24272,
+        "sha256": "f3779f1efccc4bdcdf9c0a02ab95bf6bd092ed09c48c08cedc725889edd1d19f"
+      },
+      {
+        "path": "assets/inter-latin-600-normal-CiBQ2DWP.woff",
+        "bytes": 31260,
+        "sha256": "6a9cb3a509b4eeaf12b7dda6c4aacac3e85d07f4201bf4dd716e332e692b87bd"
+      },
+      {
+        "path": "assets/inter-latin-600-normal-LgqL8muc.woff2",
+        "bytes": 24452,
+        "sha256": "f9a06e79cd3a2a20951c0f0e28f66dd0e6d3fda73911d640a2125c8fcb78f21a"
+      },
+      {
+        "path": "assets/inter-latin-700-normal-BLAVimhd.woff",
+        "bytes": 31320,
+        "sha256": "7c5ed5655730de337704d3fc94628515cd7e3d8d32368871709bf56ac0397e7a"
+      },
+      {
+        "path": "assets/inter-latin-700-normal-Yt3aPRUw.woff2",
+        "bytes": 24356,
+        "sha256": "6f56409fd3d64bb85f7d070bce20749db2d66b6d63cec586cc22d1c761be2491"
+      },
+      {
+        "path": "assets/leaflet-src-Byf149Wh.js",
+        "bytes": 149967,
+        "sha256": "b5f6edcb2ae713969e26bdc6412df54067e80f52f4e50be26c51ce331ac54534"
+      },
+      {
+        "path": "assets/primeicons-C6QP2o4f.woff2",
+        "bytes": 35148,
+        "sha256": "9eea6e0bcb974ec568fdcb1eec182d3b5383a3a23899a690140b2c0167886882"
+      },
+      {
+        "path": "assets/primeicons-DMOk5skT.eot",
+        "bytes": 85156,
+        "sha256": "987f23eadfa70c603276a71c3c975c8d0534d9c719d8a6e3d965005e7b93747b"
+      },
+      {
+        "path": "assets/primeicons-Dr5RGzOO.svg",
+        "bytes": 342525,
+        "sha256": "36c54cecfca947a6913c96df884300ce14108c4d8cb1cb241969321342f890c9"
+      },
+      {
+        "path": "assets/primeicons-MpK4pl85.ttf",
+        "bytes": 84980,
+        "sha256": "dc895fee9f3ce1b0eaf16b4b9fab20077fc2981e6c0b332e4c97c176832fc05b"
+      },
+      {
+        "path": "assets/primeicons-WjwUDZjB.woff",
+        "bytes": 85056,
+        "sha256": "f5d1d2195e05b8085953aa7d50b2e77070cd1120e0100a8600771aa5ba11a01e"
+      },
+      {
+        "path": "assets/primevue-C68fiQ_8.js",
+        "bytes": 368605,
+        "sha256": "4df89e1a76b787b3ae5660c4fba3d57ca4c3abfcaece7543bc9a24bd2da92b79"
+      },
+      {
+        "path": "assets/vue-X6Utt7Rg.js",
+        "bytes": 101101,
+        "sha256": "8ced2e087300c10b470e51d5848f6f1635f66b7f38f1f6fc673f1a223e6133aa"
+      },
+      {
+        "path": "index.html",
+        "bytes": 823,
+        "sha256": "0ecb4deae4760584ca608728b502747cb12f6cab5583ba30f3b5a809c186543d"
+      },
+      {
+        "path": "logo.svg",
+        "bytes": 415,
+        "sha256": "717fd00945521eb5394e102394f37fdc795f9a283f8b8ed5814b5dbd67e0f49a"
+      }
+    ],
+    "manifestSha256": "9b42f4c7422e3cdf40a1370a91b4456afcdc3fbc3179014e24e9765f231acd0f"
+  },
+  "destination": {
+    "resourceGroup": "rg-friotrack-tb1",
+    "storageAccount": "friotracktb1bce6db1b",
+    "endpoint": "https://friotracktb1bce6db1b.z22.web.core.windows.net/",
+    "pathPrefix": "/"
+  },
+  "backendCompatibility": {
+    "version": "0.2.0",
+    "persistence": "postgresql"
+  },
+  "verification": {
+    "allHashesMatch": true,
+    "checkedFiles": 20,
+    "checks": [
+      {
+        "path": "assets/index-D3f_K87u.js",
+        "status": 200,
+        "sha256": "5839715bdc02de5ecab7a32ce3e3e53f1a6ecd2e93f6b4c7591cd057cc0f0337"
+      },
+      {
+        "path": "assets/index-DEFquSPh.css",
+        "status": 200,
+        "sha256": "dd697af59174374bda560027e80a54d2c7aa8b7a4cbbb6581961f7bd0c8bfe9f"
+      },
+      {
+        "path": "assets/inter-latin-400-normal-C38fXH4l.woff2",
+        "status": 200,
+        "sha256": "8909904ab6c872eb994093482a88a28eca2cd95912d7b6fecd72103b0dc07edc"
+      },
+      {
+        "path": "assets/inter-latin-400-normal-CyCys3Eg.woff",
+        "status": 200,
+        "sha256": "e20fa0b4fd2dd26e4d14b3ac3cc922509c3a63fa5e910e90c614544aa042dd45"
+      },
+      {
+        "path": "assets/inter-latin-500-normal-BL9OpVg8.woff",
+        "status": 200,
+        "sha256": "9b42c108da48b5ed55a3072e815ffee2d271562e6c0dd6998910e8f9c09e0a3d"
+      },
+      {
+        "path": "assets/inter-latin-500-normal-Cerq10X2.woff2",
+        "status": 200,
+        "sha256": "f3779f1efccc4bdcdf9c0a02ab95bf6bd092ed09c48c08cedc725889edd1d19f"
+      },
+      {
+        "path": "assets/inter-latin-600-normal-CiBQ2DWP.woff",
+        "status": 200,
+        "sha256": "6a9cb3a509b4eeaf12b7dda6c4aacac3e85d07f4201bf4dd716e332e692b87bd"
+      },
+      {
+        "path": "assets/inter-latin-600-normal-LgqL8muc.woff2",
+        "status": 200,
+        "sha256": "f9a06e79cd3a2a20951c0f0e28f66dd0e6d3fda73911d640a2125c8fcb78f21a"
+      },
+      {
+        "path": "assets/inter-latin-700-normal-BLAVimhd.woff",
+        "status": 200,
+        "sha256": "7c5ed5655730de337704d3fc94628515cd7e3d8d32368871709bf56ac0397e7a"
+      },
+      {
+        "path": "assets/inter-latin-700-normal-Yt3aPRUw.woff2",
+        "status": 200,
+        "sha256": "6f56409fd3d64bb85f7d070bce20749db2d66b6d63cec586cc22d1c761be2491"
+      },
+      {
+        "path": "assets/leaflet-src-Byf149Wh.js",
+        "status": 200,
+        "sha256": "b5f6edcb2ae713969e26bdc6412df54067e80f52f4e50be26c51ce331ac54534"
+      },
+      {
+        "path": "assets/primeicons-C6QP2o4f.woff2",
+        "status": 200,
+        "sha256": "9eea6e0bcb974ec568fdcb1eec182d3b5383a3a23899a690140b2c0167886882"
+      },
+      {
+        "path": "assets/primeicons-DMOk5skT.eot",
+        "status": 200,
+        "sha256": "987f23eadfa70c603276a71c3c975c8d0534d9c719d8a6e3d965005e7b93747b"
+      },
+      {
+        "path": "assets/primeicons-Dr5RGzOO.svg",
+        "status": 200,
+        "sha256": "36c54cecfca947a6913c96df884300ce14108c4d8cb1cb241969321342f890c9"
+      },
+      {
+        "path": "assets/primeicons-MpK4pl85.ttf",
+        "status": 200,
+        "sha256": "dc895fee9f3ce1b0eaf16b4b9fab20077fc2981e6c0b332e4c97c176832fc05b"
+      },
+      {
+        "path": "assets/primeicons-WjwUDZjB.woff",
+        "status": 200,
+        "sha256": "f5d1d2195e05b8085953aa7d50b2e77070cd1120e0100a8600771aa5ba11a01e"
+      },
+      {
+        "path": "assets/primevue-C68fiQ_8.js",
+        "status": 200,
+        "sha256": "4df89e1a76b787b3ae5660c4fba3d57ca4c3abfcaece7543bc9a24bd2da92b79"
+      },
+      {
+        "path": "assets/vue-X6Utt7Rg.js",
+        "status": 200,
+        "sha256": "8ced2e087300c10b470e51d5848f6f1635f66b7f38f1f6fc673f1a223e6133aa"
+      },
+      {
+        "path": "logo.svg",
+        "status": 200,
+        "sha256": "717fd00945521eb5394e102394f37fdc795f9a283f8b8ed5814b5dbd67e0f49a"
+      },
+      {
+        "path": "index.html",
+        "status": 200,
+        "sha256": "0ecb4deae4760584ca608728b502747cb12f6cab5583ba30f3b5a809c186543d"
+      }
+    ]
+  },
+  "scope": "Published AV2 public files; unrelated existing files retained."
+}

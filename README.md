@@ -6,6 +6,12 @@ The AV2 client consumes the resource REST API in the independent [friotrack-api]
 
 Readings remain simulated and are identified in monitoring views and CSV exports. A frontend source update does not deploy the AV2 backend or change the existing Azure data.
 
+## Published AV2 application
+
+The AV2 SPA is available at [FrioTrack](https://friotracktb1bce6db1b.z22.web.core.windows.net/), connected to the [PostgreSQL-backed API](https://friotrack-api-bce6db1b.azurewebsites.net/api/health). The landing remains available on [GitHub Pages](https://upc-pre-202620-1asi0730-8088-friotrackk.github.io/friotrack-landing/) and [Azure](https://friotracktb1bce6db1b.z22.web.core.windows.net/landing/).
+
+Frontend `0.2.1` fixes map links so that a reading identifier cannot replace its shipment identifier. The [frontend receipt](docs/redeployment-frontend.json), [API receipt](docs/redeployment-api.json), [landing receipt](docs/redeployment-landing.json) and [14 public browser checks](docs/public-interview-verification.json) identify the published artifacts and verified behavior. Demonstration accounts are isolated from historical data and their credentials are distributed privately. These technical checks do not replace participant interviews or team acceptance.
+
 ## Existing TB1 publication
 
 | Entry | URL |

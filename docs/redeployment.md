@@ -97,3 +97,7 @@ Successful components produce `docs/redeployment-frontend.json`, `docs/redeploym
 API smoke checks require the packaged version and PostgreSQL persistence in health, anonymous workspace rejection (`401`) and rejection of public coordinator registration (`403`). They do not certify database connectivity, the migration state or authenticated business flows. The team must verify coordinator/client operations with the existing private accounts after deployment and record the results. Do not publish passwords in source, the report or screenshots.
 
 The health endpoint reports an application version, not a compiled Git revision. Build from the clean recorded source; use its ZIP SHA and Kudu ID for the upload trace. Receipts from older versions remain historical evidence and do not prove an AV2 publication.
+
+## Recorded AV2 publication
+
+The 14 November 2026 deployment publishes the relational API and the AV2 SPA. The [API](redeployment-api.json), [frontend](redeployment-frontend.json) and [landing](redeployment-landing.json) receipts record the actual revisions, destinations and hashes. [Public browser verification](public-interview-verification.json) covers both roles and the demonstration shipment flows. No credentials or private database snapshots are included.
