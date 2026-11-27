@@ -35,7 +35,7 @@ async function submit() {
         <template v-if="registering"><div class="field"><label for="confirm-password">{{ t('confirmPassword') }}</label><PInputText id="confirm-password" v-model="draft.confirmPassword" type="password" required minlength="12" maxlength="128" autocomplete="new-password" :disabled="busy"/></div><div class="checkbox-field"><PCheckbox v-model="consent" inputId="consent" :binary="true" :disabled="busy"/><label for="consent">{{ t('consent') }} <RouterLink to="/terms">{{ t('terms') }}</RouterLink></label></div></template>
         <PMessage v-if="error" id="access-error" severity="error" class="form-error" role="alert">{{ error }}</PMessage><PButton type="submit" :label="t(registering ? 'register' : 'login')" icon="pi pi-arrow-right" iconPos="right" class="full-width" :loading="busy" :disabled="busy"/>
       </form>
-      <div class="access-links"><RouterLink :to="{ path: registering ? '/login' : '/register', query: { role: 'cargo-client' } }">{{ t(registering ? 'alreadyAccount' : 'newAccount') }}</RouterLink></div><div class="local-disclosure"><i class="pi pi-lock" aria-hidden="true"></i><p>{{ t('accessPermissions') }}</p></div>
+      <div class="access-links"><RouterLink v-if="!registering" to="/forgot-password">{{ t('forgotPassword') }}</RouterLink><RouterLink :to="{ path: registering ? '/login' : '/register', query: { role: 'cargo-client' } }">{{ t(registering ? 'alreadyAccount' : 'newAccount') }}</RouterLink></div><div class="local-disclosure"><i class="pi pi-lock" aria-hidden="true"></i><p>{{ t('accessPermissions') }}</p></div>
     </section>
   </div>
 </template>

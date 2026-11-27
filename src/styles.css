@@ -24,3 +24,9 @@
 .section-tabs {flex-wrap:wrap;}
 .request-status {position:fixed;z-index:1200;bottom:1rem;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:.7rem;max-width:calc(100vw - 2rem);padding:.75rem 1rem;border:1px solid #bdd3f5;border-radius:.65rem;background:#fff;color:#084bae;box-shadow:0 4px 22px #16375822;font-size:.85rem;pointer-events:none;}
 @media (prefers-reduced-motion:reduce) {.request-status .pi-spin {animation:none;}}
+
+.analytics-toolbar{display:flex;align-items:center;gap:1rem;padding:1rem;flex-wrap:wrap;margin-bottom:1.5rem}.analytics-toolbar input,.panel select{padding:.65rem;border:1px solid #c8d5e5;border-radius:.5rem;background:white;color:#10233c;font:inherit}.analytics-note{padding:1rem;color:#5f7187;font-size:.875rem;line-height:1.6}.route-alert-bar{position:relative;min-width:7rem;padding:.35rem}.route-alert-bar span{position:absolute;inset:0 auto 0 0;background:#dceaff;border-radius:.2rem}.route-alert-bar b{position:relative;z-index:1}.access-links{display:flex;flex-wrap:wrap;gap:1rem}.kpi-grid>.panel{padding:1.5rem}.kpi-grid>.panel h2{margin:.75rem 0 0}
+
+.kpi-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1rem;margin-bottom:1.5rem}@media(max-width:1000px){.kpi-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:480px){.kpi-grid{grid-template-columns:1fr}}
+
+.temperature-range{position:relative;height:14px;min-width:135px;margin-bottom:.45rem;background:#edf2f7;border-radius:8px}.temperature-range span{position:absolute;top:4px;height:6px;background:#68b9d1;min-width:2px}.temperature-range b{position:absolute;top:2px;height:10px;width:6px;background:#095bd6;transform:translateX(-3px);border-radius:3px}

@@ -49,7 +49,7 @@ export class RestWorkspaceGateway extends WorkspaceGateway {
     this.token = '';
     try { sessionStorage.removeItem(SESSION_KEY); } catch { this.onPersistenceWarning(); }
   }
-  async request(path, { method = 'GET', body, token = this.token, identityEpoch = this.identityEpoch } = {}) {
+  async request(path, { method = 'GET', body, token = this.token, identityEpoch = this.identityEpoch, binary = false } = {}) {
     let response;
     try {
       response = await fetch(this.apiUrl + path, {
@@ -59,7 +59,8 @@ export class RestWorkspaceGateway extends WorkspaceGateway {
         signal: AbortSignal.timeout(45000),
       });
     } catch { throw new Error('serviceUnavailable'); }
-    const result = response.status === 204 ? null : await response.json().catch(() => null);
+    const result = response.status === 204 ? null : binary && response.ok ? await response.blob() : await response.json().catch(() => null);
+    if (binary && response.ok && !response.headers.get('content-type')?.startsWith('application/pdf')) throw new Error('unexpected');
     if (!response.ok) {
       if (response.status === 401 && path !== '/auth/login' && identityEpoch === this.identityEpoch && token === this.token) { this.clearSession(); this.onSessionExpired(); }
       throw new Error(result?.code || (response.status === 429 ? 'tooManyAttempts' : 'unexpected'));
@@ -81,6 +82,15 @@ export class RestWorkspaceGateway extends WorkspaceGateway {
   register(draft) { return this.enter('/auth/register', { ...draft, role: 'cargo-client' }); }
   read() { return this.request('/workspace'); }
   readReport(id) { return this.request(`/reports/${resourceId({ id })}`); }
+  capabilities() { return this.request('/capabilities', { token: '' }); }
+  requestRecovery(email) { return this.request('/auth/forgot-password', { method: 'POST', body: { email }, token: '' }); }
+  resetPassword(body) { return this.request('/auth/reset-password', { method: 'POST', body, token: '' }); }
+  monthly(month) { return this.request('/analytics/monthly?month=' + encodeURIComponent(month)); }
+  audit(month) { return this.request('/audit?month=' + encodeURIComponent(month)); }
+  accounts() { return this.request('/accounts'); }
+  updateAccess(id, body) { return this.request(`/accounts/${resourceId({ id })}/access`, { method: 'PUT', body }); }
+  monthlyPdf(month) { return this.request('/reports/monthly/pdf?month=' + encodeURIComponent(month), { binary: true }); }
+  thermalPdf(id) { return this.request(`/reports/${resourceId({ id })}/pdf`, { binary: true }); }
   execute(type, payload = {}) { const { path, ...options } = resourceRequest(type, payload); return this.request(path, options); }
   async logout() {
     const token = this.token, identityEpoch = this.identityEpoch;

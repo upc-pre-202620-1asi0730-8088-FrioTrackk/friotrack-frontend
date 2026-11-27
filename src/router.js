@@ -1,3 +1,6 @@
+import RecoveryView from './iam/presentation/pages/RecoveryView.vue';
+import AccountsView from './iam/presentation/pages/AccountsView.vue';
+import AnalyticsView from './alerts-reporting/presentation/pages/AnalyticsView.vue';
 import { createRouter, createWebHashHistory } from 'vue-router';
 import { profile } from './shared/application/workspace.js';
 import AccessView from './iam/presentation/pages/AccessView.vue';
@@ -16,6 +19,10 @@ export const router = createRouter({
     { path: '/', redirect: '/dashboard' },
     { path: '/login', component: AccessView, meta: { public: true, title: 'login' } },
     { path: '/register', component: AccessView, meta: { public: true, title: 'register' } },
+    { path: '/forgot-password', component: RecoveryView, meta: { public: true, title: 'forgotPassword' } },
+    { path: '/reset-password', component: RecoveryView, meta: { public: true, title: 'resetPassword' } },
+    { path: '/analytics', component: AnalyticsView, meta: { title: 'analytics' } },
+    { path: '/accounts', component: AccountsView, meta: { manager: true, title: 'accounts' } },
     { path: '/dashboard', component: DashboardView, meta: { title: 'dashboard' } },
     { path: '/shipments', component: ShipmentsView, meta: { title: 'shipments' } },
     { path: '/shipments/new', component: ShipmentFormView, meta: { manager: true, title: 'newShipment' } },

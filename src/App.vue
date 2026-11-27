@@ -31,13 +31,15 @@ function navigationKey(event) {
   if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last?.focus(); }
   else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first?.focus(); }
 }
-const bare = computed(() => ['/login', '/register'].includes(route.path) || (route.path === '/terms' && !profile.value));
+const bare = computed(() => ['/login', '/register', '/forgot-password', '/reset-password'].includes(route.path) || (route.path === '/terms' && !profile.value));
 const navigation = computed(() => [
   { path: '/dashboard', label: 'dashboard', icon: 'objects-column' },
   { path: '/shipments', label: 'shipments', icon: 'truck' },
   { path: '/alerts', label: 'alerts', icon: 'bell' },
   ...(profile.value?.role === 'coordinator' ? [{ path: '/fleet', label: 'fleet', icon: 'warehouse' }] : []),
   { path: '/history', label: 'history', icon: 'history' },
+  { path: '/analytics', label: 'analytics', icon: 'chart-bar' },
+  ...(profile.value?.role === 'coordinator' ? [{ path: '/accounts', label: 'accounts', icon: 'users' }] : []),
 ]);
 const notices = computed(() => data.value.notifications.filter((notice) => {
   const shipment = data.value.shipments.find((item) => item.id === notice.shipmentId);

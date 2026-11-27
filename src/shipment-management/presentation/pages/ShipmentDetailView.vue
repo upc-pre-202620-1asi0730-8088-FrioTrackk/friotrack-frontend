@@ -7,7 +7,7 @@ import { data, execute, profile } from '../../../shared/application/workspace.js
 import { t, formatDate } from '../../../shared/presentation/i18n.js';
 import { announce, errorText } from '../../../shared/presentation/feedback.js';
 import { downloadSample } from '../../../alerts-reporting/application/download-sample.js';
-import { downloadThermalReport } from '../../../alerts-reporting/application/download-thermal-report.js';
+import { downloadThermalPdf as downloadThermalReport } from '../../../alerts-reporting/application/download-thermal-report.js';
 import StatusBadge from '../../../shared/presentation/components/StatusBadge.vue';
 import TemperatureChart from '../../../monitoring/presentation/components/TemperatureChart.vue';
 import MapPanel from '../../../monitoring/presentation/components/MapPanel.vue';
