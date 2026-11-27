@@ -1,4 +1,5 @@
-import { execute, readReport } from '../../shared/application/workspace.js';
+import {downloadFile} from './download-file.js';
+import { execute, readReport, downloadSnapshotPdf } from '../../shared/application/workspace.js';
 
 export async function downloadThermalReport(shipmentId) {
   const metadata = await execute('generateThermalReport', { id: shipmentId });
@@ -13,3 +14,5 @@ export async function downloadThermalReport(shipmentId) {
   link.remove();
   setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
+
+export async function downloadThermalPdf(shipmentId){const metadata=await execute('generateThermalReport',{id:shipmentId});downloadFile(await downloadSnapshotPdf(metadata.id),`friotrack-${shipmentId.replace(/[^a-zA-Z0-9_-]/g,'_')}-thermal-report.pdf`);}

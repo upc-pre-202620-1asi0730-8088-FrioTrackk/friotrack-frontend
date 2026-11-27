@@ -4,7 +4,7 @@ import { t, formatDate } from '../../../shared/presentation/i18n.js';
 import { thermalStatus } from '../../../monitoring/domain/thermal-status.js';
 import StatusBadge from '../../../shared/presentation/components/StatusBadge.vue';
 import { downloadSample } from '../../../alerts-reporting/application/download-sample.js';
-import { downloadThermalReport } from '../../../alerts-reporting/application/download-thermal-report.js';
+import { downloadThermalPdf as downloadThermalReport } from '../../../alerts-reporting/application/download-thermal-report.js';
 import { announce } from '../../../shared/presentation/feedback.js';
 defineProps({ shipments: Array, showExport: Boolean });
 const reportBusy = ref('');

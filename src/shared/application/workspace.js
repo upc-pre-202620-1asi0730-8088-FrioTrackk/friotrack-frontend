@@ -32,3 +32,14 @@ export async function execute(type, payload = {}) { return tracked(async () => {
 export async function refreshWorkspace() { if (gateway.hasSession) return tracked(async () => { const epoch = workspaceEpoch; const result = await gateway.read(); if (epoch !== workspaceEpoch) throw new Error('sessionExpired'); update(result); }); }
 export async function readReport(id) { return tracked(async () => { const epoch = workspaceEpoch; const result = await gateway.readReport(id); if (epoch !== workspaceEpoch) throw new Error('sessionExpired'); return result; }); }
 export async function restoreSession() { if (!gateway.hasSession) return; const epoch = workspaceEpoch; try { await refreshWorkspace(); } catch { if (epoch === workspaceEpoch) { gateway.clearSession(); clearWorkspace(); } } }
+
+async function query(method,...args){return tracked(async()=>{const epoch=workspaceEpoch;const value=await gateway[method](...args);if(epoch!==workspaceEpoch)throw new Error('sessionExpired');return value;});}
+export const readCapabilities=()=>gateway.capabilities();
+export const requestPasswordRecovery=email=>gateway.requestRecovery(email);
+export const resetPassword=body=>gateway.resetPassword(body);
+export const readMonthlyAnalytics=month=>query('monthly',month);
+export const readOperationalAudit=month=>query('audit',month);
+export const readAccounts=()=>query('accounts');
+export const updateAccountAccess=(id,body)=>query('updateAccess',id,body);
+export const downloadMonthlyPdf=month=>query('monthlyPdf',month);
+export const downloadSnapshotPdf=id=>query('thermalPdf',id);

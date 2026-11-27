@@ -98,3 +98,11 @@ The landing has a separate source repository. Its updated code is not duplicated
 The historical TB1 publication used a single-instance JSON store. The current AV2 publication uses the relational API and identifies demonstration readings as simulated. It does not ingest physical sensors, send email/SMS, process payments, verify emails, recover passwords or issue sensor audit certificates. The terms are an informational project draft. The checks and screenshots do not establish complete WCAG compliance.
 
 The repository uses `feature/* → develop`, then a reviewed `release/* → main` integration with the result returned to `develop`. Emergency fixes use `hotfix/*` from `main` and are integrated into both branches. Commits use Conventional Commits and describe one coherent change. New code revisions require a separate deployment before the published Azure URLs can be attributed to them.
+
+## Sprint 4 — TB2
+
+La versión 0.3.0 incorpora `/analytics` para estadísticas y auditoría operativa, `/accounts` para administrar accesos dentro de la empresa y las pantallas `/forgot-password` y `/reset-password`. El cliente consulta únicamente sus envíos; el coordinador administra las cuentas de su organización. Los cambios de acceso revocan las sesiones afectadas.
+
+Las estadísticas se solicitan a la API por mes UTC de salida y distinguen lecturas ausentes de valores medidos. Los informes de trazabilidad y el resumen mensual se descargan como PDF autenticado. Los errores HTML o la falta de autorización no se presentan como descargas correctas.
+
+La recuperación solo permite solicitar mensajes cuando `/api/capabilities` confirma que el servidor tiene configurado el proveedor. Las credenciales SMTP se administran en el backend y no se incluyen en el bundle. Los mapas opcionales mantienen la integración con OpenStreetMap y su atribución.
