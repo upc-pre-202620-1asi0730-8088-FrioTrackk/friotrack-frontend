@@ -76,7 +76,7 @@ Sensors have their own inventory tab and may remain unassigned. The vehicle form
 
 All routes are relative to the configured API base, normally `/api`. Mutation paths encode resource identifiers; shipment writes retain the optimistic version. Requests send `Accept-Language: en-US` or `es-419`. The client does not use the old generic `/commands` endpoint. Authentication still uses the API's opaque bearer session; registration cannot request coordinator privileges. A `401` clears the browser session, while a `409` preserves the current view and reports the conflict. A response arriving after sign-out cannot restore the previous user workspace.
 
-Delivered shipments expose a user-requested thermal report download as JSON. The API stores an immutable snapshot and rechecks authorization when it is fetched. This is separate from the CSV reading export available during the trip; neither is described as a PDF or a sensor certificate. Demonstration provenance remains in the downloaded snapshot.
+Delivered shipments expose a user-requested thermal report download as JSON. The API stores an immutable snapshot and rechecks authorization when it is fetched. This is separate from the CSV reading export available during the trip; the current Sprint 4 also renders the persisted snapshot as a PDF with demonstration provenance. Demonstration provenance remains in the downloaded snapshot.
 
 ## Verification
 
@@ -101,8 +101,10 @@ The repository uses `feature/* → develop`, then a reviewed `release/* → main
 
 ## Sprint 4 — TB2
 
-La versión 0.3.0 incorpora `/analytics` para estadísticas y auditoría operativa, `/accounts` para administrar accesos dentro de la empresa y las pantallas `/forgot-password` y `/reset-password`. El cliente consulta únicamente sus envíos; el coordinador administra las cuentas de su organización. Los cambios de acceso revocan las sesiones afectadas.
+La versión 0.4.0 incorpora `/analytics` para estadísticas y auditoría operativa, `/accounts` para administrar accesos dentro de la empresa y las pantallas `/forgot-password` y `/reset-password`. El cliente consulta únicamente sus envíos; el coordinador administra las cuentas de su organización. Los cambios de acceso revocan las sesiones afectadas.
 
 Las estadísticas se solicitan a la API por mes UTC de salida y distinguen lecturas ausentes de valores medidos. Los informes de trazabilidad y el resumen mensual se descargan como PDF autenticado. Los errores HTML o la falta de autorización no se presentan como descargas correctas.
 
 La recuperación solo permite solicitar mensajes cuando `/api/capabilities` confirma que el servidor tiene configurado el proveedor. Las credenciales SMTP se administran en el backend y no se incluyen en el bundle. Los mapas opcionales mantienen la integración con OpenStreetMap y su atribución.
+
+The analytics screen compares monthly and quarterly departures and filters the operational audit by period and user. Quarterly metrics aggregate individual readings across the whole quarter. The executive PDF remains explicitly monthly.
