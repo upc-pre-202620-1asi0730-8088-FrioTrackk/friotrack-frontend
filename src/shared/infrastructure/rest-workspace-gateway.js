@@ -86,7 +86,8 @@ export class RestWorkspaceGateway extends WorkspaceGateway {
   requestRecovery(email) { return this.request('/auth/forgot-password', { method: 'POST', body: { email }, token: '' }); }
   resetPassword(body) { return this.request('/auth/reset-password', { method: 'POST', body, token: '' }); }
   monthly(month) { return this.request('/analytics/monthly?month=' + encodeURIComponent(month)); }
-  audit(month) { return this.request('/audit?month=' + encodeURIComponent(month)); }
+  quarterly(year, quarter) { return this.request('/analytics/quarterly?' + new URLSearchParams({year,quarter})); }
+  audit(filters) { return this.request('/audit?' + new URLSearchParams(typeof filters === 'string' ? {month: filters} : filters)); }
   accounts() { return this.request('/accounts'); }
   updateAccess(id, body) { return this.request(`/accounts/${resourceId({ id })}/access`, { method: 'PUT', body }); }
   monthlyPdf(month) { return this.request('/reports/monthly/pdf?month=' + encodeURIComponent(month), { binary: true }); }

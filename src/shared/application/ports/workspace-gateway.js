@@ -9,6 +9,7 @@ export class WorkspaceGateway {
   requestRecovery() { throw new Error('Not implemented'); }
   resetPassword() { throw new Error('Not implemented'); }
   monthly() { throw new Error('Not implemented'); }
+  quarterly() { throw new Error('Not implemented'); }
   audit() { throw new Error('Not implemented'); }
   accounts() { throw new Error('Not implemented'); }
   updateAccess() { throw new Error('Not implemented'); }
